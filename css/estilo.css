@@ -50,21 +50,39 @@ background-blend-mode: lighten;
 
 .contenedor-principal{
     display: flex;
-    height: 100vh;
-}
-
-.lado-izquierdo{
-    width: 50%;
-    display: flex;
     justify-content: center;
     align-items: center;
+    gap: 80px;
+    margin-top: 40px;
 }
 
-.lado-derecho{
-    width: 50%;
-    display: flex;
-    justify-content: center; /* centra horizontal */
-    align-items: center;     /* centra vertical */
+/* FORMULARIO */
+.lado-izquierdo{
+    background: #e6e6e6;
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+/* LABELS */
+.collabel{
+    color: orange;
+    font-size: 14px;
+}
+
+/* INPUTS */
+.lado-izquierdo input,
+.lado-izquierdo select{
+    width: 220px;
+    padding: 4px;
+    margin-bottom: 8px;
+    border: 1px solid #999;
+}
+
+/* IMAGEN */
+.lado-derecho img{
+    width: 420px;
+    border-radius: 5px;
 }
 
 .fotos1{
@@ -77,9 +95,6 @@ background-blend-mode: lighten;
 }
 .colorlabel {
 	color: #050400;
-}
-.collabel {
-	color: #f1c40f;
 }
 
 .boton {
@@ -105,4 +120,5 @@ background-blend-mode: lighten;
 	width: 300px;
 	margin: 0 auto;
 	text-align: center;
+
 }
