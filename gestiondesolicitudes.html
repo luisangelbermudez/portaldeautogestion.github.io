@@ -39,32 +39,46 @@
 <h1>Gestión de Solicitudes</h1>
 </div>
 
-<table>
+<div class="container mt-4">
 
-<tr>
-<th>ID</th>
-<th>Usuario</th>
-<th>Tipo</th>
-<th>Estado</th>
-</tr>
+    <div class="row text-center">
 
-<tr>
-<td>101</td>
-<td>Juan Pérez</td>
-<td>Soporte</td>
-<td>Pendiente</td>
-</tr>
+        <!-- Solicitudes Hoy -->
+        <div class="col-md-4 mb-3">
+            <div class="card shadow border-0">
+                <div class="card-body bg-primary text-white">
+                    <h5 class="card-title">Solicitudes Hoy</h5>
+                    <h2>12</h2>
+                </div>
+            </div>
+        </div>
 
-<tr>
-<td>102</td>
-<td>Maria Lopez</td>
-<td>Consulta</td>
-<td>Resuelta</td>
-</tr>
+        <!-- Aprobadas -->
+        <div class="col-md-4 mb-3">
+            <div class="card shadow border-0">
+                <div class="card-body bg-success text-white">
+                    <h5 class="card-title">Aprobadas</h5>
+                    <h2>8</h2>
+                </div>
+            </div>
+        </div>
 
-</table>
+        <!-- Pendientes -->
+        <div class="col-md-4 mb-3">
+            <div class="card shadow border-0">
+                <div class="card-body bg-warning text-dark">
+                    <h5 class="card-title">Pendientes</h5>
+                    <h2>4</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 
 </div>
 
 </body>
+
 </html>
