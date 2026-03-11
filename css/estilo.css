@@ -25,7 +25,6 @@ body {
 }
 
 .login-box{
-
 background-image: url("../imagenes/lapto.jpg");
 background-size: cover;
 background-position: center;
@@ -52,8 +51,9 @@ background-blend-mode: lighten;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 80px;
+    gap: 40px;
     margin-top: 40px;
+    flex-wrap: wrap; /* permite que baje en celular */
 }
 
 /* FORMULARIO */
@@ -73,15 +73,16 @@ background-blend-mode: lighten;
 /* INPUTS */
 .lado-izquierdo input,
 .lado-izquierdo select{
-    width: 220px;
-    padding: 4px;
-    margin-bottom: 8px;
+    width: 100%;   /* antes 220px */
+    padding: 6px;
+    margin-bottom: 10px;
     border: 1px solid #999;
 }
 
 /* IMAGEN */
 .lado-derecho img{
-    width: 420px;
+    width: 100%;     /* antes 420px */
+    max-width: 420px;
     border-radius: 5px;
 }
 
@@ -120,5 +121,23 @@ background-blend-mode: lighten;
 	width: 300px;
 	margin: 0 auto;
 	text-align: center;
+
+}
+
+@media (max-width:768px){
+
+.contenedor-principal{
+    flex-direction: column;
+    gap: 20px;
+}
+
+.lado-izquierdo{
+    width: 90%;
+}
+
+.lado-derecho{
+    width: 90%;
+    text-align: center;
+}
 
 }
