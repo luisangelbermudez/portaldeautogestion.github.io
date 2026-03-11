@@ -2,69 +2,137 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Acegrasco S.A.</title> <link rel="stylesheet" type="text/css" href="css/normalice.css">
-	<link rel="stylesheet" type="text/css" href="css/estilo.css">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acegrasco S.A. - Gestión de Usuarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/theme-bootstrap-5/bootstrap-icons.css">
+    <style>
+        body { background-color: #f4f6f9; }
+        .navbar-joomla { background-color: #006eb5; color: white; }
+        .sidebar { background: white; border-radius: 5px; border: 1px solid #dee2e6; }
+        .sidebar .nav-link { color: #333; border-bottom: 1px solid #eee; }
+        .sidebar .nav-link.active { background-color: #006eb5; color: white; }
+        .toolbar-btn { margin-right: 5px; }
+    </style>
 </head>
-
 <body>
 
-<div class="container mt-3">
-    <div class="alert alert-info bg-primary-subtle text-center">
-        <h1>Portal de Autogestión</h1>
+<nav class="navbar navbar-dark navbar-joomla shadow-sm mb-3">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Gestor de usuarios: Usuarios</span>
     </div>
-
-    <nav class="navbar navbar-expand-sm bg-primary navbar-dark mb-5 rounded">
-        <div class="container-fluid">
-            <ul class="navbar-nav">
-        <li class="nav-item">
-		<a class="nav-link active" href="admin.html">Inicio</a> </li>	
-		<li class="nav-item">			
-		<a class="nav-link active" href="gestiondeusuarios.html">Usuarios</a> </li>	
-		<li class="nav-item">
-		<a class="nav-link active" href="gestiondesolicitudes.html">Solicitudes</a> </li>	
-		<li class="nav-item">
-		<a class="nav-link active" href="reportes.html">Reportes</a> </li>	
-		<li class="nav-item">
-		<a class="nav-link active" href="login.html">Cerrar Sesion</a> </li>
-	  </ul>
-	</div>
 </nav>
 
-<div class="main">
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12 d-flex flex-wrap bg-white p-2 border rounded shadow-sm">
+            <button class="btn btn-success btn-sm toolbar-btn">✚ Nuevo</button>
+            <button class="btn btn-outline-secondary btn-sm toolbar-btn">Editar</button>
+            <button class="btn btn-outline-success btn-sm toolbar-btn">Activar</button>
+            <button class="btn btn-outline-danger btn-sm toolbar-btn">Bloquear</button>
+            <button class="btn btn-outline-dark btn-sm toolbar-btn">Borrar</button>
+            <div class="ms-auto">
+                <button class="btn btn-light btn-sm border">Opciones</button>
+                <button class="btn btn-light btn-sm border">Ayuda</button>
+            </div>
+        </div>
+    </div>
 
-<div class="header">
-<h1>Panel de Administración</h1>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="sidebar shadow-sm">
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link active" href="#">Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Grupos de usuario</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Niveles de acceso</a></li>
+                </ul>
+            </div>
+            
+            <div class="mt-3">
+                <label class="form-label fw-bold">Filtro:</label>
+                <select class="form-select form-select-sm mb-2"><option>- Estado -</option></select>
+                <select class="form-select form-select-sm mb-2"><option>- Grupo -</option></select>
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <div class="p-3 border-bottom bg-light">
+                        <div class="input-group mb-0" style="max-width: 300px;">
+                            <input type="text" class="form-control form-control-sm" placeholder="Buscar usuarios">
+                            <button class="btn btn-outline-secondary btn-sm">🔍</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>Nombre</th>
+                                    <th>Usuario</th>
+                                    <th>Habilitado</th>
+                                    <th>Grupos</th>
+                                    <th>Correo electrónico</th>
+                                    <th>ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><a href="#" class="text-decoration-none">José Leonardo</a></td>
+                                    <td>jose.trivino</td>
+                                    <td><span class="text-success">✔</span></td>
+                                    <td>Super Users</td>
+                                    <td>jltrivino@acegrasco.com</td>
+                                    <td class="text-muted">001</td>
+                                </tr>
+								<tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><a href="#" class="text-decoration-none">Gennifer</a></td>
+                                    <td>gennifer.silvana</td>
+                                    <td><span class="text-success">✔</span></td>
+                                    <td>Super Users</td>
+                                    <td>gsilvana@acegrasco.com</td>
+                                    <td class="text-muted">002</td>
+                                </tr>
+
+								<tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><a href="#" class="text-decoration-none">Richard</a></td>
+                                    <td>richard.acevedo</td>
+                                    <td><span class="text-success">✔</span></td>
+                                    <td>Super Users</td>
+                                    <td>racevedo@acegrasco.com</td>
+                                    <td class="text-muted">003</td>
+                                </tr>
+
+								<tr>
+                                    <td><input type="checkbox"></td>
+                                    <td><a href="#" class="text-decoration-none">Nicolas</a></td>
+                                    <td>nicolas.luna</td>
+                                    <td><span class="text-success">✔</span></td>
+                                    <td>Super Users</td>
+                                    <td>nluna@acegrasco.com</td>
+                                    <td class="text-muted">004</td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="cards">
-
-<div class="card">
-<h3>Usuarios registrados</h3>
-<p>120</p>
-</div>
-
-<div class="card">
-<h3>Solicitudes activas</h3>
-<p>45</p>
-</div>
-
-<div class="card">
-<h3>Solicitudes resueltas</h3>
-<p>300</p>
-</div>
-
-</div>
-
-</div>
-
-<footer class="text-center mt-5 p-3 bg-light">
-Portal de Autogestión - Sistema de gestión de solicitudes  
-© 2026
+<footer class="text-center mt-5 p-3 text-muted">
+    © 2026 Acegrasco S.A. - Portal de Autogestión
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
+
+
+
