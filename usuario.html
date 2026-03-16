@@ -8,6 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="css/estilo.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
 </head>
 <body>
 
@@ -27,10 +28,12 @@
 <div class="collapse navbar-collapse" id="menu">
             <ul class="navbar-nav">
               <li class="nav-item">
-        <a class="nav-link active" href="index.html">🏠 Inicio</a> </li>
+                <a class="nav-link active" href="index.html">🏠 Inicio</a> </li>
              <li class="nav-item">
-        <a class="nav-link active" href="login.html">🚪 Cerrar Sesion</a> </li>
-    </ul>
+                <a class="nav-link active" href="login.html">🚪 Cerrar Sesión</a> </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="ayuda.html">❓ Ayuda</a> </li>
+            </ul>
 </div>
 </div>
 </nav>
@@ -59,7 +62,6 @@
 </div>
 
 </div>
-
 
 <div class="row">
 
@@ -104,23 +106,25 @@
 
 <label class="form-label">Tipo de carta</label>
 
-<select class="form-select mb-3">
+<select id="tipoCarta" class="form-select mb-3">
 
-<option>Seleccionar...</option>
+<option value="">Seleccionar...</option>
 
-<option>Certificación laboral - todos</option>
+<option value="docs/carta1.pdf">Certificación laboral - todos</option>
 
-<option>Certificación laboral - sin básico</option>
+<option value="docs/carta2.pdf">Certificación laboral - sin básico</option>
 
-<option>Carta laboral con promedio extras</option>
-
-<option>Carta solo ingreso - indicadores</option>
+<option value="docs/carta3.pdf">Carta laboral con promedio extras</option>
 
 </select>
 
-<button class="btn btn-dark w-100">
+<button class="btn btn-dark w-100 mb-3" onclick="generarCertificado()">
 CONSULTAR
 </button>
+
+<!-- AREA RESULTADO -->
+
+<div id="resultadoCertificado" class="text-center"></div>
 
 </div>
 
@@ -134,10 +138,46 @@ CONSULTAR
 Portal de Autogestión - Sistema de gestión de solicitudes  
 © 2026
 </footer>
-	
+
+<script>
+
+function generarCertificado(){
+
+let tipoCarta = document.getElementById("tipoCarta").value;
+let resultado = document.getElementById("resultadoCertificado");
+
+if(tipoCarta === ""){
+resultado.innerHTML = "<div class='alert alert-warning'>Seleccione un tipo de certificado</div>";
+return;
+}
+
+resultado.innerHTML = `
+
+<div class="alert alert-success">
+Certificado generado correctamente
+</div>
+
+<a href="${tipoCarta}" class="btn btn-success w-100 mb-2" download>
+⬇ Descargar certificado
+</a>
+
+<button class="btn btn-primary w-100" onclick="enviarCorreo()">
+📧 Enviar a correo registrado
+</button>
+
+`;
+
+}
+
+function enviarCorreo(){
+
+alert("El certificado ha sido enviado al correo registrado del empleado.");
+
+}
+
+</script>
 
 </body>
-
 </html>
 
 
