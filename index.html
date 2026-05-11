@@ -1,126 +1,458 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Portal de Autogestión - Página Principal</title> <link rel="stylesheet" type="text/css" href="css/normalice.css">
-	<link rel="stylesheet" type="text/css" href="css/estilo.css">
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Autogestión - Acegrasco</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --primary: #0F6E56;
+      --primary-light: #1D9E75;
+      --primary-dark: #085041;
+      --accent: #EF9F27;
+      --bg: #f4f7f5;
+      --surface: #ffffff;
+      --text: #1a2e25;
+      --text-muted: #5a7a6a;
+      --border: rgba(15,110,86,0.15);
+      --nav-h: 64px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      gap: 1rem;
+    }
+    .nav-brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      flex: 1;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 0.5rem; }
+    .nav-links a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      transition: background 0.18s, color 0.18s;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .nav-links a.btn-nav {
+      background: var(--accent);
+      color: #412402;
+      font-weight: 600;
+    }
+    .nav-links a.btn-nav:hover { background: #fac775; }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 0;
+      min-height: calc(100vh - var(--nav-h));
+      max-height: calc(100vh - var(--nav-h));
+    }
+
+    /* CAROUSEL */
+    .carousel-wrap {
+      position: relative;
+      overflow: hidden;
+      background: var(--primary-dark);
+    }
+    .carousel-slides {
+      display: flex;
+      height: 100%;
+      transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+    }
+    .slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .slide-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(4,52,44,0.82) 0%, rgba(4,52,44,0.2) 60%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2.5rem;
+    }
+    .slide-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .slide-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .slide-desc {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 480px;
+    }
+    .carousel-nav {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 0.4rem;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+    }
+    .dot.active { background: var(--accent); transform: scale(1.3); }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .carousel-btn:hover { background: rgba(255,255,255,0.28); }
+    .carousel-btn.prev { left: 1rem; }
+    .carousel-btn.next { right: 1rem; }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+    }
+    .sidebar-header {
+      background: var(--primary);
+      padding: 1.8rem 2rem 1.5rem;
+      color: #fff;
+    }
+    .sidebar-header .logo-img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      margin-bottom: 0.75rem;
+      padding: 6px;
+    }
+    .sidebar-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .sidebar-header p {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    .sidebar-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .panel-title {
+      background: var(--bg);
+      padding: 0.6rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-body { padding: 1.1rem 1rem; }
+
+    .form-group { margin-bottom: 0.85rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 0.88rem;
+      font-family: 'DM Sans', sans-serif;
+      background: #fafefb;
+      color: var(--text);
+      transition: border-color 0.18s, box-shadow 0.18s;
+      outline: none;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 0.65rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
+    }
+    .btn-primary:hover { background: var(--primary-light); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-secondary {
+      width: 100%;
+      padding: 0.6rem;
+      background: transparent;
+      color: var(--primary);
+      border: 1.5px solid var(--primary);
+      border-radius: 7px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .btn-secondary:hover { background: rgba(15,110,86,0.07); }
+    .divider {
+      text-align: center;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin: 0.5rem 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 38%;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    /* FOOTER */
+    footer {
+      background: var(--primary-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+    }
+    footer .contact { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    footer .contact span { display: flex; align-items: center; gap: 0.3rem; }
+    footer .copy { color: rgba(255,255,255,0.45); }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; max-height: none; min-height: auto; }
+      .carousel-wrap { height: 52vw; min-height: 240px; }
+      .nav-links a span { display: none; }
+    }
+  </style>
+</head>
 <body>
 
-<div class="container mt-3">
-
-    <div class="alert alert-info bg-primary-subtle text-center">
-        <h1>Portal de Autogestión</h1>
-	</div>
-
-<nav class="navbar navbar-expand-sm bg-primary navbar-dark mb-1 rounded">
-<div class="container-fluid">
-
-<a class="navbar-brand" href="#">Portal</a>
-
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-<span class="navbar-toggler-icon"></span>
-</button>
-
-<div class="collapse navbar-collapse" id="menu">
-<ul class="navbar-nav">
-
-        <li class="nav-item">
-		<a class="nav-link active" href="login.html">➡ Login</a> </li>	
-		<li class="nav-item">			
-		<a class="nav-link active" href="registro.html">👤+ Registro</a> </li>	
-		<li class="nav-item">
-		<a class="nav-link active" href="usuario.html">👤 Usuario</a> </li>	
-		<li class="nav-item">
-		<a class="nav-link active" href="admin.html">📊 Administrador</a> </li>	
-
-</ul>
-</div>
-
-</div>
+<nav>
+  <a class="nav-brand" href="index.html">Portal <span>Acegrasco</span></a>
+  <div class="nav-links">
+    <a href="usuario.html">&#128100; Usuario</a>
+    <a href="admin.html">&#128202; Admin</a>
+  </div>
 </nav>
 
-<div id="demo" class="carousel slide" data-bs-ride="carousel"> <div class="carousel-indicators">
-  <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
-  <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
-  <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
-  </div>
-  
-<div class="carousel-inner">
-	<div class="carousel-item active">
-		<img src="imagenes/portal1.JPG" class="d-block" style="width:100%" height="200" alt="portal1"> </div>
-	<div class="carousel-item">
-		<img src="imagenes/portal2.jpg" class="d-block" style="width:100%" height="200" alt="portal2"> </div>
-	<div class="carousel-item">
-		<img src="imagenes/portal3.JPG" class="d-block" style="width:100%" height="200" alt="portal3"> </div>
-</div>
+<main class="hero">
+  <!-- CAROUSEL -->
+  <div class="carousel-wrap">
+    <div class="carousel-slides" id="slides">
+      <div class="slide">
+        <img src="imagenes/portal1.JPG" alt="Portal Acegrasco 1" onerror="this.style.background='#0F6E56';this.style.minHeight='300px'" />
+        <div class="slide-overlay">
+          <div class="slide-tag">Bienvenido</div>
+          <div class="slide-title">Portal de Autogestión Acegrasco</div>
+          <div class="slide-desc">Gestiona tus solicitudes de forma rápida, segura y desde cualquier dispositivo.</div>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="imagenes/portal2.jpg" alt="Portal Acegrasco 2" onerror="this.style.background='#085041';this.style.minHeight='300px'" />
+        <div class="slide-overlay">
+          <div class="slide-tag">Eficiencia</div>
+          <div class="slide-title">Solicitudes en minutos, no en días</div>
+          <div class="slide-desc">Nuestro sistema centraliza todas tus gestiones con trazabilidad en tiempo real.</div>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="imagenes/portal3.JPG" alt="Portal Acegrasco 3" onerror="this.style.background='#04342C';this.style.minHeight='300px'" />
+        <div class="slide-overlay">
+          <div class="slide-tag">Control total</div>
+          <div class="slide-title">Administración centralizada</div>
+          <div class="slide-desc">Panel administrativo con reportes, usuarios y seguimiento de solicitudes en un solo lugar.</div>
+        </div>
+      </div>
+    </div>
 
-<button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev"> <span class="carousel-control-prev-icon"></span>
-</button>
-<button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next"> <span class="carousel-control-next-icon"></span>
-</button>
-</div>
-</div>
+    <button class="carousel-btn prev" onclick="moveSlide(-1)">&#8592;</button>
+    <button class="carousel-btn next" onclick="moveSlide(1)">&#8594;</button>
+    <div class="carousel-nav" id="dots"></div>
+  </div>
 
-<div class="container text-center mt-4">
+  <!-- SIDEBAR LOGIN/REGISTRO -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img class="logo-img" src="imagenes/acegrasco.JPG" alt="Acegrasco" onerror="this.style.display='none'" />
+      <h2>Acegrasco S.A.</h2>
+      <p>Sistema de gestión de solicitudes</p>
+    </div>
 
-<img src="imagenes/acegrasco.JPG" 
-class="img-fluid mx-auto d-block" 
-alt="Acegrasco">
+    <div class="sidebar-body">
+      <!-- LOGIN -->
+      <div class="panel">
+        <div class="panel-title">Iniciar Sesión</div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" placeholder="usuario@acegrasco.com" />
+          </div>
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" placeholder="••••••••" />
+          </div>
+          <button class="btn-primary" onclick="location.href='usuario.html'">Ingresar</button>
+        </div>
+      </div>
 
-</div>
+      <div class="divider">o</div>
+
+      <!-- REGISTRO -->
+      <div class="panel">
+        <div class="panel-title">Crear Cuenta</div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" placeholder="Nombre Apellido" />
+          </div>
+          <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" placeholder="correo@ejemplo.com" />
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" placeholder="Mínimo 8 caracteres" />
+          </div>
+          <button class="btn-secondary" onclick="location.href='registro.html'">Registrarse</button>
+        </div>
+      </div>
+
+      <!-- ACCESO ADMIN -->
+      <div style="text-align:center; padding: 0.5rem 0;">
+        <a href="admin.html" style="font-size:0.78rem; color: var(--text-muted); text-decoration:none;">
+          &#128202; Acceso Administrador
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
 
 <footer>
-
-<div class="boton">
-<p>
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="48"
-  height="48"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="#ffcc00"
-  stroke-width="1.75"
-  stroke-linecap="round"
-  stroke-linejoin="round"
->
-  <path d="M12 9.5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
-  <path d="M6.428 12.494l7.314 -9.252" />
-  <path d="M10.002 7.935l-2.937 -2.545" />
-  <path d="M17.693 6.593l-8.336 9.979" />
-  <path d="M17.591 6.376c.472 .907 .715 1.914 .709 2.935a7.263 7.263 0 0 1 -.72 3.18a19.085 19.085 0 0 1 -2.089 3c-.784 .933 -1.49 1.93 -2.11 2.98c-.314 .62 -.568 1.27 -.757 1.938c-.121 .36 -.277 .591 -.622 .591c-.315 0 -.463 -.136 -.626 -.593a10.595 10.595 0 0 0 -.779 -1.978a18.18 18.18 0 0 0 -1.423 -2.091c-.877 -1.184 -2.179 -2.535 -2.853 -4.071a7.077 7.077 0 0 1 -.621 -2.967a6.226 6.226 0 0 1 1.476 -4.055a6.25 6.25 0 0 1 4.811 -2.245a6.462 6.462 0 0 1 1.918 .284a6.255 6.255 0 0 1 3.686 3.092z" />
-</svg>
-</p>
-</div>
-
-<div class="colortitulo">
-	<h3>Contacto</h3>
-</div>
-
-<div class="contactenos">
-	<p>
-			<b>WhatsApp:</b> (+57) 301 2952356<br> <b>E-mail:</b> info@acegrasco.com.co<br>
-			<b>Dirección:</b> Calle 15 # 5-23, Bogota, Colombia </p>
-</div>
-
+  <div class="contact">
+    <span>&#128241; (+57) 301 2952356</span>
+    <span>&#9993; info@acegrasco.com.co</span>
+    <span>&#128205; Calle 15 #5-23, Bogotá</span>
+  </div>
+  <div class="copy">Portal de Autogestión &copy; 2026</div>
 </footer>
 
-<footer class="text-center mt-5 p-3 bg-light">
-Portal de Autogestión - Sistema de gestión de solicitudes  
-© 2026
-</footer>
+<script>
+  const slides = document.getElementById('slides');
+  const dotsEl = document.getElementById('dots');
+  let current = 0;
+  const total = 3;
+  const dots = [];
 
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dotsEl.appendChild(d);
+    dots.push(d);
+  }
+
+  function goTo(n) {
+    current = (n + total) % total;
+    slides.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  function moveSlide(dir) { goTo(current + dir); }
+
+  setInterval(() => moveSlide(1), 5000);
+</script>
 </body>
 </html>
-
-
-
-
-
 
 
