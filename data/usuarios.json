@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "nombre": "José Leonardo Triviño",
+    "usuario": "jose.trivino",
+    "correo": "jltrivino@acegrasco.com",
+    "grupo": "Super Users",
+    "estado": "Activo"
+  },
+  {
+    "id": 2,
+    "nombre": "Gennifer Silvana",
+    "usuario": "gennifer.silvana",
+    "correo": "gsilvana@acegrasco.com",
+    "grupo": "Super Users",
+    "estado": "Activo"
+  },
+  {
+    "id": 3,
+    "nombre": "Richard Acevedo",
+    "usuario": "richard.acevedo",
+    "correo": "racevedo@acegrasco.com",
+    "grupo": "Super Users",
+    "estado": "Activo"
+  },
+  {
+    "id": 4,
+    "nombre": "Nicolas Luna",
+    "usuario": "nicolas.luna",
+    "correo": "nluna@acegrasco.com",
+    "grupo": "Super Users",
+    "estado": "Activo"
+  }
+]
