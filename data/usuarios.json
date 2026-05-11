@@ -4,6 +4,9 @@
     "nombre": "José Leonardo Triviño",
     "usuario": "jose.trivino",
     "correo": "jltrivino@acegrasco.com",
+    "cedula": "1234567890",
+    "cargo": "Gerente General",
+    "fechaIngreso": "2018-03-15",
     "grupo": "Super Users",
     "estado": "Activo"
   },
@@ -12,6 +15,9 @@
     "nombre": "Gennifer Silvana",
     "usuario": "gennifer.silvana",
     "correo": "gsilvana@acegrasco.com",
+    "cedula": "9876543210",
+    "cargo": "Coordinadora RRHH",
+    "fechaIngreso": "2019-07-01",
     "grupo": "Super Users",
     "estado": "Activo"
   },
@@ -20,6 +26,9 @@
     "nombre": "Richard Acevedo",
     "usuario": "richard.acevedo",
     "correo": "racevedo@acegrasco.com",
+    "cedula": "1122334455",
+    "cargo": "Analista de Sistemas",
+    "fechaIngreso": "2020-11-10",
     "grupo": "Super Users",
     "estado": "Activo"
   },
@@ -28,7 +37,10 @@
     "nombre": "Nicolas Luna",
     "usuario": "nicolas.luna",
     "correo": "nluna@acegrasco.com",
-    "grupo": "Super Users",
+    "cedula": "5566778899",
+    "cargo": "Auxiliar Contable",
+    "fechaIngreso": "2021-05-20",
+    "grupo": "Usuarios",
     "estado": "Activo"
   }
 ]
