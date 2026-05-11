@@ -1,4 +1,27 @@
-  const slides = document.getElementById('slides');
+ /* ============================================================
+   SECCIÓN: LOGIN (index.html)
+   ============================================================ */
+
+function login() {
+    let rol = document.getElementById("rol").value;
+    localStorage.setItem("rolUsuario", rol);
+
+    if (rol === "admin") {
+        window.location.href = "admin.html";
+    } else {
+        window.location.href = "usuario.html";
+    }
+}
+
+// Mostrar nombre del usuario logueado (si existe en el DOM)
+let nombreGuardado = localStorage.getItem("nombreUsuario");
+let elNombre = document.getElementById("nombreUsuario");
+if (elNombre && nombreGuardado) {
+    elNombre.innerText = nombreGuardado;
+}
+ 
+ 
+ const slides = document.getElementById('slides');
   const dotsEl = document.getElementById('dots');
   let current = 0;
   const total = 3;
