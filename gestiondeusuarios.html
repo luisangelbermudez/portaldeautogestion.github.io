@@ -1,715 +1,186 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestión de Usuarios - Acegrasco</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --primary: #0F6E56;
-      --primary-light: #1D9E75;
-      --primary-dark: #085041;
-      --accent: #EF9F27;
-      --bg: #f4f7f5;
-      --surface: #ffffff;
-      --text: #1a2e25;
-      --text-muted: #5a7a6a;
-      --border: rgba(15,110,86,0.15);
-      --danger: #A32D2D;
-      --danger-bg: #FCEBEB;
-      --warn: #854F0B;
-      --warn-bg: #FAEEDA;
-    }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+  <!DOCTYPE html>
+  <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Usuarios - Acegrasco</title>
+    <link rel="stylesheet" href="css/gestiondeusuarios.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
+  <body>
 
-    nav {
-      background: var(--primary-dark);
-      height: 56px;
-      display: flex;
-      align-items: center;
-      padding: 0 1.5rem;
-      gap: 0.5rem;
-      flex-shrink: 0;
-    }
-    .nav-brand { font-family: 'Syne', sans-serif; font-size: 1rem; color: #fff; text-decoration: none; flex: 1; }
-    .nav-brand span { color: var(--accent); }
-    nav a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.82rem; padding: 0.35rem 0.7rem; border-radius: 5px; transition: background 0.15s; }
-    nav a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  <nav>
+    <a class="nav-brand" href="admin.html">Portal <span>Acegrasco</span> &rsaquo; Gestión de Usuarios</a>
+    <a href="admin.html">&#127968; Inicio</a>
+    <a href="login.html">&#128682; Salir</a>
+  </nav>
 
-    .layout { display: flex; flex: 1; overflow: hidden; }
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-title">Usuarios</div>
+      <a class="side-link active" href="#">&#128100; Usuarios</a>
+      <a class="side-link" href="#">&#128101; Grupos</a>
+      <a class="side-link" href="#">&#128272; Niveles de acceso</a>
+      <div class="side-divider"></div>
+      <div class="sidebar-title">Reportes</div>
+      <a class="side-link" href="reportes.html">&#128202; Ver reportes</a>
+    </aside>
 
-    .sidebar {
-      width: 210px;
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: 1.25rem 0;
-      flex-shrink: 0;
-    }
-    .sidebar-title {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      padding: 0 1.25rem;
-      margin-bottom: 0.5rem;
-    }
-    .side-link {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 0.55rem 1.25rem;
-      font-size: 0.87rem;
-      color: var(--text);
-      text-decoration: none;
-      transition: background 0.15s;
-      border-left: 3px solid transparent;
-    }
-    .side-link:hover { background: #f0f8f4; }
-    .side-link.active { border-left-color: var(--primary); background: #e8f5ef; color: var(--primary); font-weight: 500; }
-    .side-divider { height: 1px; background: var(--border); margin: 0.75rem 1.25rem; }
-
-    .main { flex: 1; overflow-y: auto; padding: 1.75rem 2rem; }
-
-    .page-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .page-header h1 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; }
-    .page-header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
-    .header-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.5rem 1rem;
-      border-radius: 7px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      border: none;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn:active { transform: scale(0.97); }
-    .btn-green { background: var(--primary); color: #fff; }
-    .btn-green:hover { background: var(--primary-light); }
-    .btn-outline { background: #fff; color: var(--primary); border: 1.5px solid var(--primary); }
-    .btn-outline:hover { background: #f0f8f4; }
-    .btn-excel { background: #1D6F42; color: #fff; }
-    .btn-excel:hover { background: #25a158; }
-    .btn-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #f7c1c1; }
-    .btn-danger:hover { background: #f7c1c1; }
-    .btn-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid #FAC775; }
-    .btn-warn:hover { background: #FAC775; }
-    .btn-sm { padding: 0.3rem 0.65rem; font-size: 0.78rem; border-radius: 5px; }
-
-    /* UPLOAD ZONE */
-    .upload-section {
-      background: var(--surface);
-      border: 2px dashed #9FE1CB;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .upload-section.dragover { border-color: var(--primary); background: #e8f5ef; }
-    .upload-section h3 { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.35rem; }
-    .upload-section p { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.85rem; }
-    .upload-section .template-note { font-size: 0.75rem; color: var(--primary); margin-top: 0.5rem; }
-    #xlsxInput { display: none; }
-    .upload-row { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
-
-    /* TOOLBAR */
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-    .search-box {
-      display: flex;
-      align-items: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 0 0.75rem;
-      gap: 0.5rem;
-      flex: 1;
-      min-width: 180px;
-    }
-    .search-box input {
-      border: none;
-      outline: none;
-      font-size: 0.87rem;
-      font-family: 'DM Sans', sans-serif;
-      background: transparent;
-      padding: 0.5rem 0;
-      flex: 1;
-      color: var(--text);
-    }
-    .search-icon { color: var(--text-muted); font-size: 1rem; }
-    select.filter-sel {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      font-size: 0.85rem;
-      font-family: 'DM Sans', sans-serif;
-      background: var(--surface);
-      color: var(--text);
-      outline: none;
-      cursor: pointer;
-    }
-
-    /* TABLE */
-    .table-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #f0f8f4; }
-    th {
-      padding: 0.75rem 1rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-    }
-    th:hover { color: var(--primary); }
-    td {
-      padding: 0.75rem 1rem;
-      font-size: 0.87rem;
-      border-bottom: 1px solid rgba(15,110,86,0.06);
-      vertical-align: middle;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #fafefb; }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.22rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.73rem;
-      font-weight: 600;
-    }
-    .badge-active { background: #EAF3DE; color: #3B6D11; }
-    .badge-inactive { background: #FCEBEB; color: #A32D2D; }
-    .badge-blocked { background: var(--warn-bg); color: var(--warn); }
-    .avatar {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      background: #9FE1CB;
-      color: #085041;
-      font-weight: 600;
-      font-size: 0.78rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .td-name { display: flex; align-items: center; gap: 0.6rem; }
-    .td-actions { display: flex; gap: 0.4rem; }
-
-    /* MODAL */
-    .modal-bg {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(4,52,44,0.45);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .modal-bg.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border-radius: 14px;
-      width: 100%;
-      max-width: 480px;
-      overflow: hidden;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-    }
-    .modal-header {
-      background: var(--primary);
-      padding: 1.1rem 1.5rem;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .modal-header h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
-    .modal-close { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; opacity: 0.8; }
-    .modal-close:hover { opacity: 1; }
-    .modal-body { padding: 1.5rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .form-group { margin-bottom: 0.85rem; }
-    .form-group label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.3rem; }
-    .form-group input, .form-group select {
-      width: 100%;
-      padding: 0.55rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      font-size: 0.87rem;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.18s;
-    }
-    .form-group input:focus, .form-group select:focus { border-color: var(--primary-light); }
-    .modal-footer { padding: 1rem 1.5rem; background: var(--bg); display: flex; justify-content: flex-end; gap: 0.5rem; border-top: 1px solid var(--border); }
-
-    .toast {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: var(--primary-dark);
-      color: #fff;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      z-index: 999;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.25s, transform 0.25s;
-      pointer-events: none;
-    }
-    .toast.show { opacity: 1; transform: translateY(0); }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-    }
-    .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.4; }
-    .empty-state p { font-size: 0.9rem; }
-
-    @media (max-width: 700px) {
-      .layout { flex-direction: column; }
-      .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 0.5rem 0; display: flex; flex-direction: row; overflow-x: auto; }
-      .sidebar-title { display: none; }
-      .side-divider { display: none; }
-      .side-link { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 0.5rem 1rem; }
-      .side-link.active { border-bottom-color: var(--primary); border-left-color: transparent; }
-    }
-  </style>
-</head>
-<body>
-
-<nav>
-  <a class="nav-brand" href="admin.html">Portal <span>Acegrasco</span> &rsaquo; Gestión de Usuarios</a>
-  <a href="admin.html">&#127968; Inicio</a>
-  <a href="login.html">&#128682; Salir</a>
-</nav>
-
-<div class="layout">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-title">Usuarios</div>
-    <a class="side-link active" href="#">&#128100; Usuarios</a>
-    <a class="side-link" href="#">&#128101; Grupos</a>
-    <a class="side-link" href="#">&#128272; Niveles de acceso</a>
-    <div class="side-divider"></div>
-    <div class="sidebar-title">Reportes</div>
-    <a class="side-link" href="reportes.html">&#128202; Ver reportes</a>
-  </aside>
-
-  <!-- CONTENT -->
-  <main class="main">
-    <div class="page-header">
-      <div>
-        <h1>Gestión de Usuarios</h1>
-        <p>Administra los usuarios del sistema Acegrasco</p>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-excel" onclick="document.getElementById('xlsxInput').click()">
-          &#128196; Importar Excel
-        </button>
-        <button class="btn btn-outline" onclick="exportExcel()">
-          &#8659; Exportar Excel
-        </button>
-        <button class="btn btn-green" onclick="openModal('new')">
-          &#43; Nuevo usuario
-        </button>
-      </div>
-    </div>
-
-    <!-- ZONA CARGA EXCEL -->
-    <div class="upload-section" id="dropZone">
-      <h3>&#128196; Importar base de datos de usuarios</h3>
-      <p>Arrastra un archivo Excel (.xlsx / .xls) aquí, o haz clic para seleccionar</p>
-      <div class="upload-row">
-        <button class="btn btn-excel" onclick="document.getElementById('xlsxInput').click()">Seleccionar archivo</button>
-        <button class="btn btn-outline" onclick="downloadTemplate()">Descargar plantilla</button>
-      </div>
-      <input type="file" id="xlsxInput" accept=".xlsx,.xls" onchange="handleFile(event)" />
-      <div class="template-note">Columnas requeridas: Nombre, Usuario, Correo, Grupo, Estado (Activo/Inactivo/Bloqueado)</div>
-    </div>
-
-    <!-- TOOLBAR -->
-    <div class="toolbar">
-      <div class="search-box">
-        <span class="search-icon">&#128269;</span>
-        <input type="text" id="searchInput" placeholder="Buscar por nombre, usuario o correo..." oninput="renderTable()" />
-      </div>
-      <select class="filter-sel" id="statusFilter" onchange="renderTable()">
-        <option value="">Todos los estados</option>
-        <option value="Activo">Activo</option>
-        <option value="Inactivo">Inactivo</option>
-        <option value="Bloqueado">Bloqueado</option>
-      </select>
-      <select class="filter-sel" id="groupFilter" onchange="renderTable()">
-        <option value="">Todos los grupos</option>
-        <option value="Super Users">Super Users</option>
-        <option value="Usuarios">Usuarios</option>
-        <option value="Operadores">Operadores</option>
-      </select>
-      <span id="countBadge" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap;"></span>
-    </div>
-
-    <!-- TABLE -->
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th onclick="sortBy('id')" title="Ordenar"># ID</th>
-            <th onclick="sortBy('nombre')">Nombre &#8597;</th>
-            <th onclick="sortBy('usuario')">Usuario &#8597;</th>
-            <th onclick="sortBy('grupo')">Grupo &#8597;</th>
-            <th>Correo</th>
-            <th onclick="sortBy('estado')">Estado &#8597;</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-      <div id="emptyState" class="empty-state" style="display:none;">
-        <div class="icon">&#128101;</div>
-        <p>No se encontraron usuarios con los filtros actuales.</p>
-      </div>
-    </div>
-  </main>
-</div>
-
-<!-- MODAL CREAR/EDITAR -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="modalTitle">Nuevo Usuario</h3>
-      <button class="modal-close" onclick="closeModal()">&#10005;</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="editId" />
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nombre *</label>
-          <input type="text" id="fNombre" placeholder="Nombre completo" />
+    <!-- CONTENT -->
+    <main class="main">
+      <div class="page-header">
+        <div>
+          <h1>Gestión de Usuarios</h1>
+          <p>Administra los usuarios del sistema Acegrasco</p>
         </div>
-        <div class="form-group">
-          <label>Usuario *</label>
-          <input type="text" id="fUsuario" placeholder="nombre.apellido" />
+        <div class="header-actions">
+          <button class="btn btn-excel" onclick="document.getElementById('xlsxInput').click()">
+            &#128196; Importar Excel
+          </button>
+          <button class="btn btn-outline" onclick="exportExcel()">
+            &#8659; Exportar Excel
+          </button>
+          <button class="btn btn-green" onclick="openModal('new')">
+            &#43; Nuevo usuario
+          </button>
         </div>
       </div>
-      <div class="form-group">
-        <label>Correo electrónico *</label>
-        <input type="email" id="fCorreo" placeholder="correo@acegrasco.com" />
+
+      <!-- ZONA CARGA EXCEL -->
+      <div class="upload-section" id="dropZone">
+        <h3>&#128196; Importar base de datos de usuarios</h3>
+        <p>Arrastra un archivo Excel (.xlsx / .xls) aquí, o haz clic para seleccionar</p>
+        <div class="upload-row">
+          <button class="btn btn-excel" onclick="document.getElementById('xlsxInput').click()">Seleccionar archivo</button>
+          <button class="btn btn-outline" onclick="downloadTemplate()">Descargar plantilla</button>
+        </div>
+        <input type="file" id="xlsxInput" accept=".xlsx,.xls" onchange="handleFile(event)" />
+        <div class="template-note">Columnas requeridas: Nombre, Usuario, Correo, Grupo, Estado (Activo/Inactivo/Bloqueado)</div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Grupo</label>
-          <select id="fGrupo">
-            <option>Super Users</option>
-            <option>Usuarios</option>
-            <option>Operadores</option>
-          </select>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="search-icon">&#128269;</span>
+          <input type="text" id="searchInput" placeholder="Buscar por nombre, usuario o correo..." oninput="renderTable()" />
+        </div>
+        <select class="filter-sel" id="statusFilter" onchange="renderTable()">
+          <option value="">Todos los estados</option>
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+          <option value="Bloqueado">Bloqueado</option>
+        </select>
+        <select class="filter-sel" id="groupFilter" onchange="renderTable()">
+          <option value="">Todos los grupos</option>
+          <option value="Super Users">Super Users</option>
+          <option value="Usuarios">Usuarios</option>
+          <option value="Operadores">Operadores</option>
+        </select>
+        <span id="countBadge" style="font-size:0.8rem;color:var(--text-muted);white-space:nowrap;"></span>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBy('id')" title="Ordenar"># ID</th>
+              <th onclick="sortBy('nombre')">Nombre &#8597;</th>
+              <th onclick="sortBy('usuario')">Usuario &#8597;</th>
+              <th onclick="sortBy('grupo')">Grupo &#8597;</th>
+              <th>Correo</th>
+              <th onclick="sortBy('estado')">Estado &#8597;</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none;">
+          <div class="icon">&#128101;</div>
+          <p>No se encontraron usuarios con los filtros actuales.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL CREAR/EDITAR -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Nuevo Usuario</h3>
+        <button class="modal-close" onclick="closeModal()">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="fNombre" placeholder="Nombre completo" />
+          </div>
+          <div class="form-group">
+            <label>Usuario *</label>
+            <input type="text" id="fUsuario" placeholder="nombre.apellido" />
+          </div>
         </div>
         <div class="form-group">
-          <label>Estado</label>
-          <select id="fEstado">
-            <option>Activo</option>
-            <option>Inactivo</option>
-            <option>Bloqueado</option>
-          </select>
+          <label>Correo electrónico *</label>
+          <input type="email" id="fCorreo" placeholder="correo@acegrasco.com" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Grupo</label>
+            <select id="fGrupo">
+              <option>Super Users</option>
+              <option>Usuarios</option>
+              <option>Operadores</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="fEstado">
+              <option>Activo</option>
+              <option>Inactivo</option>
+              <option>Bloqueado</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Contraseña <span style="font-size:0.72rem;color:var(--text-muted);">(dejar vacío para no cambiar)</span></label>
+          <input type="password" id="fPassword" placeholder="••••••••" />
         </div>
       </div>
-      <div class="form-group">
-        <label>Contraseña <span style="font-size:0.72rem;color:var(--text-muted);">(dejar vacío para no cambiar)</span></label>
-        <input type="password" id="fPassword" placeholder="••••••••" />
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-green" onclick="saveUser()">Guardar usuario</button>
       </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-green" onclick="saveUser()">Guardar usuario</button>
     </div>
   </div>
-</div>
 
-<!-- MODAL CONFIRMAR DELETE -->
-<div class="modal-bg" id="confirmBg">
-  <div class="modal" style="max-width:360px;">
-    <div class="modal-header" style="background:var(--danger);">
-      <h3>Confirmar eliminación</h3>
-      <button class="modal-close" onclick="document.getElementById('confirmBg').classList.remove('open')">&#10005;</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:0.9rem;">¿Estás seguro de que deseas eliminar al usuario <strong id="deleteUserName"></strong>? Esta acción no se puede deshacer.</p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-outline" onclick="document.getElementById('confirmBg').classList.remove('open')">Cancelar</button>
-      <button class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+  <!-- MODAL CONFIRMAR DELETE -->
+  <div class="modal-bg" id="confirmBg">
+    <div class="modal" style="max-width:360px;">
+      <div class="modal-header" style="background:var(--danger);">
+        <h3>Confirmar eliminación</h3>
+        <button class="modal-close" onclick="document.getElementById('confirmBg').classList.remove('open')">&#10005;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.9rem;">¿Estás seguro de que deseas eliminar al usuario <strong id="deleteUserName"></strong>? Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="document.getElementById('confirmBg').classList.remove('open')">Cancelar</button>
+        <button class="btn btn-danger" onclick="confirmDelete()">Eliminar</button>
+      </div>
     </div>
   </div>
-</div>
 
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-<script>
-  let users = [
-    { id: 1, nombre: 'José Leonardo Triviño', usuario: 'jose.trivino', correo: 'jltrivino@acegrasco.com', grupo: 'Super Users', estado: 'Activo' },
-    { id: 2, nombre: 'Gennifer Silvana',       usuario: 'gennifer.silvana', correo: 'gsilvana@acegrasco.com', grupo: 'Super Users', estado: 'Activo' },
-    { id: 3, nombre: 'Richard Acevedo',         usuario: 'richard.acevedo', correo: 'racevedo@acegrasco.com', grupo: 'Super Users', estado: 'Activo' },
-    { id: 4, nombre: 'Nicolas Luna',            usuario: 'nicolas.luna',    correo: 'nluna@acegrasco.com',    grupo: 'Super Users', estado: 'Activo' },
-  ];
-  let nextId = 5;
-  let sortKey = 'id', sortAsc = true;
-  let deleteTargetId = null;
 
-  function initials(name) {
-    return name.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
-  }
-
-  function badgeClass(estado) {
-    if (estado === 'Activo') return 'badge-active';
-    if (estado === 'Bloqueado') return 'badge-blocked';
-    return 'badge-inactive';
-  }
-
-  function renderTable() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    const sf = document.getElementById('statusFilter').value;
-    const gf = document.getElementById('groupFilter').value;
-
-    let filtered = users.filter(u => {
-      const match = !q || u.nombre.toLowerCase().includes(q) || u.usuario.toLowerCase().includes(q) || u.correo.toLowerCase().includes(q);
-      const stateOk = !sf || u.estado === sf;
-      const groupOk = !gf || u.grupo === gf;
-      return match && stateOk && groupOk;
-    });
-
-    filtered.sort((a, b) => {
-      let va = a[sortKey], vb = b[sortKey];
-      if (typeof va === 'string') va = va.toLowerCase();
-      if (typeof vb === 'string') vb = vb.toLowerCase();
-      return sortAsc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
-    });
-
-    const tbody = document.getElementById('tableBody');
-    const empty = document.getElementById('emptyState');
-    document.getElementById('countBadge').textContent = `${filtered.length} usuario${filtered.length !== 1 ? 's' : ''}`;
-
-    if (!filtered.length) {
-      tbody.innerHTML = '';
-      empty.style.display = 'block';
-      return;
-    }
-    empty.style.display = 'none';
-    tbody.innerHTML = filtered.map(u => `
-      <tr>
-        <td><span style="font-size:0.78rem;color:var(--text-muted);">#${String(u.id).padStart(3,'0')}</span></td>
-        <td>
-          <div class="td-name">
-            <div class="avatar">${initials(u.nombre)}</div>
-            <div>
-              <div style="font-weight:500;font-size:0.87rem;">${u.nombre}</div>
-              <div style="font-size:0.75rem;color:var(--text-muted);">${u.usuario}</div>
-            </div>
-          </div>
-        </td>
-        <td><code style="font-size:0.8rem;background:#f0f8f4;padding:2px 6px;border-radius:4px;">${u.usuario}</code></td>
-        <td><span style="font-size:0.82rem;">${u.grupo}</span></td>
-        <td style="font-size:0.82rem;color:var(--primary);">${u.correo}</td>
-        <td><span class="badge ${badgeClass(u.estado)}">${u.estado}</span></td>
-        <td>
-          <div class="td-actions">
-            <button class="btn btn-outline btn-sm" onclick="openModal('edit',${u.id})">&#9998; Editar</button>
-            <button class="btn btn-warn btn-sm" onclick="toggleStatus(${u.id})">${u.estado==='Bloqueado'?'&#128275; Activar':'&#128274; Bloquear'}</button>
-            <button class="btn btn-danger btn-sm" onclick="askDelete(${u.id})">&#128465;</button>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-  }
-
-  function sortBy(key) {
-    if (sortKey === key) sortAsc = !sortAsc;
-    else { sortKey = key; sortAsc = true; }
-    renderTable();
-  }
-
-  function openModal(mode, id) {
-    document.getElementById('modalBg').classList.add('open');
-    document.getElementById('editId').value = '';
-    ['fNombre','fUsuario','fCorreo','fPassword'].forEach(f => document.getElementById(f).value = '');
-    document.getElementById('fGrupo').value = 'Super Users';
-    document.getElementById('fEstado').value = 'Activo';
-
-    if (mode === 'edit' && id) {
-      const u = users.find(x => x.id === id);
-      if (!u) return;
-      document.getElementById('modalTitle').textContent = 'Editar Usuario';
-      document.getElementById('editId').value = u.id;
-      document.getElementById('fNombre').value = u.nombre;
-      document.getElementById('fUsuario').value = u.usuario;
-      document.getElementById('fCorreo').value = u.correo;
-      document.getElementById('fGrupo').value = u.grupo;
-      document.getElementById('fEstado').value = u.estado;
-    } else {
-      document.getElementById('modalTitle').textContent = 'Nuevo Usuario';
-    }
-  }
-
-  function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
-
-  function saveUser() {
-    const nombre = document.getElementById('fNombre').value.trim();
-    const usuario = document.getElementById('fUsuario').value.trim();
-    const correo = document.getElementById('fCorreo').value.trim();
-    const grupo = document.getElementById('fGrupo').value;
-    const estado = document.getElementById('fEstado').value;
-    const editId = document.getElementById('editId').value;
-
-    if (!nombre || !usuario || !correo) { showToast('⚠ Por favor completa los campos requeridos.'); return; }
-
-    if (editId) {
-      const u = users.find(x => x.id === +editId);
-      if (u) { u.nombre = nombre; u.usuario = usuario; u.correo = correo; u.grupo = grupo; u.estado = estado; }
-      showToast('✓ Usuario actualizado correctamente.');
-    } else {
-      users.push({ id: nextId++, nombre, usuario, correo, grupo, estado });
-      showToast('✓ Usuario creado correctamente.');
-    }
-    closeModal();
-    renderTable();
-  }
-
-  function toggleStatus(id) {
-    const u = users.find(x => x.id === id);
-    if (!u) return;
-    u.estado = u.estado === 'Bloqueado' ? 'Activo' : 'Bloqueado';
-    renderTable();
-    showToast(`Usuario ${u.estado === 'Bloqueado' ? 'bloqueado' : 'activado'}.`);
-  }
-
-  function askDelete(id) {
-    const u = users.find(x => x.id === id);
-    if (!u) return;
-    deleteTargetId = id;
-    document.getElementById('deleteUserName').textContent = u.nombre;
-    document.getElementById('confirmBg').classList.add('open');
-  }
-
-  function confirmDelete() {
-    users = users.filter(x => x.id !== deleteTargetId);
-    document.getElementById('confirmBg').classList.remove('open');
-    renderTable();
-    showToast('Usuario eliminado.');
-  }
-
-  function handleFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      try {
-        const wb = XLSX.read(ev.target.result, { type: 'binary' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const data = XLSX.utils.sheet_to_json(ws);
-        let added = 0;
-        data.forEach(row => {
-          const nombre = row['Nombre'] || row['nombre'] || '';
-          const usuario = row['Usuario'] || row['usuario'] || '';
-          const correo = row['Correo'] || row['correo'] || row['Email'] || '';
-          const grupo = row['Grupo'] || row['grupo'] || 'Usuarios';
-          const estado = row['Estado'] || row['estado'] || 'Activo';
-          if (nombre && usuario) {
-            users.push({ id: nextId++, nombre, usuario, correo, grupo, estado });
-            added++;
-          }
-        });
-        renderTable();
-        showToast(`✓ ${added} usuario(s) importados desde Excel.`);
-      } catch(err) {
-        showToast('⚠ Error al leer el archivo. Verifica el formato.');
-      }
-    };
-    reader.readAsBinaryString(file);
-    e.target.value = '';
-  }
-
-  function exportExcel() {
-    const data = users.map(u => ({
-      'ID': u.id, 'Nombre': u.nombre, 'Usuario': u.usuario,
-      'Correo': u.correo, 'Grupo': u.grupo, 'Estado': u.estado
-    }));
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
-    XLSX.writeFile(wb, 'usuarios_acegrasco.xlsx');
-    showToast('✓ Archivo Excel descargado.');
-  }
-
-  function downloadTemplate() {
-    const data = [{ 'Nombre': 'Ejemplo Apellido', 'Usuario': 'ejemplo.apellido', 'Correo': 'ejemplo@acegrasco.com', 'Grupo': 'Usuarios', 'Estado': 'Activo' }];
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
-    XLSX.writeFile(wb, 'plantilla_usuarios.xlsx');
-    showToast('✓ Plantilla descargada.');
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3200);
-  }
-
-  // Drag & drop
-  const zone = document.getElementById('dropZone');
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      const fakeEvt = { target: { files: [file], value: '' } };
-      handleFile(fakeEvt);
-    }
-  });
-
-  renderTable();
-</script>
-</body>
-</html>
+  </body>
+  <script src="js/gestiondeusuarios.js"></script>
+  </html>
 
 
 
