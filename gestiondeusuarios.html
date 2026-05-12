@@ -1,359 +1,212 @@
-/* ================================================================
-   gestiondeusuarios.js — Gestión de Usuarios Acegrasco
-   PERSISTENCIA: localStorage (clave "acegrasco_users")
-   SESIÓN:       localStorage (clave "sesionUsuario")
-   ================================================================ */
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Usuarios - Acegrasco</title>
+  <link rel="stylesheet" href="css/gestiondeusuarios.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
  
-const LS_KEY   = "acegrasco_users";   // clave de persistencia de usuarios
-const LS_SEED  = "acegrasco_seeded";  // flag para saber si ya se cargó el JSON inicial
+<nav>
+  <a class="nav-brand" href="admin.html">Portal <span>Acegrasco</span> &rsaquo; Gestión de Usuarios</a>
+  <a href="admin.html">🏠 Inicio</a>
+  <a href="index.html">🚪 Salir</a>
+</nav>
  
-let users  = [];
-let nextId = 1;
-let sortKey = "id", sortAsc = true;
-let deleteTargetId = null;
+<div class="layout">
  
-/* ----------------------------------------------------------------
-   INICIO: carga usuarios desde localStorage o desde usuarios.json
-   ---------------------------------------------------------------- */
-async function inicializar() {
-  const guardados = localStorage.getItem(LS_KEY);
-  const seeded    = localStorage.getItem(LS_SEED);
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Usuarios</div>
+    <a class="side-link active" href="#">👤 Usuarios</a>
+    <a class="side-link" href="#">👥 Grupos</a>
+    <a class="side-link" href="#">🔑 Niveles de acceso</a>
+    <div class="side-divider"></div>
+    <div class="sidebar-title">Reportes</div>
+    <a class="side-link" href="reportes.html">📊 Ver reportes</a>
+  </aside>
  
-  if (guardados && seeded) {
-    // Ya existen datos persistidos → usarlos directamente
-    users  = JSON.parse(guardados);
-    nextId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
-  } else {
-    // Primera vez: cargar desde el JSON base
-    try {
-      const resp = await fetch("data/usuarios.json");
-      const base = await resp.json();
-      users  = base;
-      nextId = users.length ? Math.max(...users.map(u => u.id)) + 1 : 1;
-      persistir();
-      localStorage.setItem(LS_SEED, "1");
-    } catch(e) {
-      console.warn("No se pudo cargar usuarios.json, iniciando vacío.", e);
-      users  = [];
-      nextId = 1;
-    }
-  }
-  renderTable();
-}
+  <!-- CONTENIDO -->
+  <main class="main">
  
-/* Guarda el estado actual de users en localStorage */
-function persistir() {
-  localStorage.setItem(LS_KEY, JSON.stringify(users));
-}
+    <div class="page-header">
+      <div>
+        <h1>Gestión de Usuarios</h1>
+        <p>Administra los empleados y sus datos en el sistema Acegrasco</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-excel"   onclick="document.getElementById('xlsxInput').click()">📥 Importar Excel</button>
+        <button class="btn btn-outline" onclick="exportExcel()">⬇ Exportar Excel</button>
+        <button class="btn btn-green"   onclick="openModal('new')">+ Nuevo usuario</button>
+      </div>
+    </div>
  
-/* ----------------------------------------------------------------
-   TABLA
-   ---------------------------------------------------------------- */
-function initials(name) {
-  return name.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();
-}
+    <!-- ZONA CARGA EXCEL -->
+    <div class="upload-section" id="dropZone">
+      <h3>📂 Importar base de datos de empleados</h3>
+      <p>Arrastra un archivo Excel (.xlsx / .xls) aquí, o haz clic para seleccionar</p>
+      <div class="upload-row">
+        <button class="btn btn-excel"   onclick="document.getElementById('xlsxInput').click()">Seleccionar archivo</button>
+        <button class="btn btn-outline" onclick="downloadTemplate()">Descargar plantilla</button>
+      </div>
+      <input type="file" id="xlsxInput" accept=".xlsx,.xls" onchange="handleFile(event)"/>
+      <div class="template-note">
+        Columnas requeridas: Nombre · Usuario · Correo · Cédula · Cargo · Fecha Ingreso · Grupo · Estado
+      </div>
+    </div>
  
-function badgeClass(estado) {
-  if (estado === "Activo")    return "badge-active";
-  if (estado === "Bloqueado") return "badge-blocked";
-  return "badge-inactive";
-}
+    <!-- TOOLBAR FILTROS -->
+    <div class="toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, usuario, cédula o correo..." oninput="renderTable()"/>
+      </div>
+      <select class="filter-sel" id="statusFilter" onchange="renderTable()">
+        <option value="">Todos los estados</option>
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+        <option value="Bloqueado">Bloqueado</option>
+      </select>
+      <select class="filter-sel" id="groupFilter" onchange="renderTable()">
+        <option value="">Todos los grupos</option>
+        <option value="Super Users">Super Users</option>
+        <option value="Usuarios">Usuarios</option>
+        <option value="Operadores">Operadores</option>
+      </select>
+      <span id="countBadge" style="font-size:.8rem;color:var(--text-muted);white-space:nowrap;"></span>
+    </div>
  
-function renderTable() {
-  const q  = (document.getElementById("searchInput").value  || "").toLowerCase();
-  const sf = document.getElementById("statusFilter").value  || "";
-  const gf = document.getElementById("groupFilter").value   || "";
+    <!-- TABLA -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortBy('id')">#ID</th>
+            <th onclick="sortBy('nombre')">Nombre ↕</th>
+            <th onclick="sortBy('cedula')">Cédula ↕</th>
+            <th onclick="sortBy('cargo')">Cargo ↕</th>
+            <th onclick="sortBy('fechaIngreso')">Fecha Ingreso ↕</th>
+            <th onclick="sortBy('grupo')">Grupo ↕</th>
+            <th>Correo</th>
+            <th onclick="sortBy('estado')">Estado ↕</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <div class="icon">👥</div>
+        <p>No se encontraron usuarios con los filtros actuales.</p>
+      </div>
+    </div>
  
-  let filtered = users.filter(u => {
-    const txt   = (u.nombre + u.usuario + u.correo + (u.cedula||"") + (u.cargo||"")).toLowerCase();
-    const match = !q  || txt.includes(q);
-    const stOk  = !sf || u.estado === sf;
-    const grOk  = !gf || u.grupo  === gf;
-    return match && stOk && grOk;
-  });
+  </main>
+</div><!-- /layout -->
  
-  filtered.sort((a, b) => {
-    let va = a[sortKey] ?? "", vb = b[sortKey] ?? "";
-    if (typeof va === "string") va = va.toLowerCase();
-    if (typeof vb === "string") vb = vb.toLowerCase();
-    return sortAsc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
-  });
  
-  const tbody = document.getElementById("tableBody");
-  const empty = document.getElementById("emptyState");
-  document.getElementById("countBadge").textContent =
-    `${filtered.length} usuario${filtered.length !== 1 ? "s" : ""}`;
+<!-- MODAL CREAR / EDITAR USUARIO -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Nuevo Usuario</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId"/>
  
-  if (!filtered.length) {
-    tbody.innerHTML = "";
-    empty.style.display = "block";
-    return;
-  }
-  empty.style.display = "none";
- 
-  tbody.innerHTML = filtered.map(u => `
-    <tr>
-      <td><span style="font-size:.78rem;color:var(--text-muted);">#${String(u.id).padStart(3,"0")}</span></td>
-      <td>
-        <div class="td-name">
-          <div class="avatar">${initials(u.nombre)}</div>
-          <div>
-            <div style="font-weight:500;font-size:.87rem;">${u.nombre}</div>
-            <div style="font-size:.75rem;color:var(--text-muted);">${u.usuario}</div>
-          </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" id="fNombre" placeholder="Nombre completo"/>
         </div>
-      </td>
-      <td style="font-size:.82rem;">${u.cedula  || "—"}</td>
-      <td style="font-size:.82rem;">${u.cargo   || "—"}</td>
-      <td style="font-size:.82rem;">${u.fechaIngreso || "—"}</td>
-      <td><span style="font-size:.82rem;">${u.grupo}</span></td>
-      <td style="font-size:.82rem;color:var(--primary);">${u.correo}</td>
-      <td><span class="badge ${badgeClass(u.estado)}">${u.estado}</span></td>
-      <td>
-        <div class="td-actions">
-          <button class="btn btn-outline btn-sm" onclick="openModal('edit',${u.id})">✏ Editar</button>
-          <button class="btn btn-warn btn-sm"    onclick="toggleStatus(${u.id})">${u.estado === "Bloqueado" ? "🔓 Activar" : "🔒 Bloquear"}</button>
-          <button class="btn btn-danger btn-sm"  onclick="askDelete(${u.id})">🗑</button>
+        <div class="form-group">
+          <label>Usuario *</label>
+          <input type="text" id="fUsuario" placeholder="nombre.apellido"/>
         </div>
-      </td>
-    </tr>
-  `).join("");
-}
+      </div>
  
-function sortBy(key) {
-  if (sortKey === key) sortAsc = !sortAsc;
-  else { sortKey = key; sortAsc = true; }
-  renderTable();
-}
+      <div class="form-group">
+        <label>Correo electrónico *</label>
+        <input type="email" id="fCorreo" placeholder="correo@acegrasco.com"/>
+      </div>
  
-/* ----------------------------------------------------------------
-   MODAL CREAR / EDITAR
-   ---------------------------------------------------------------- */
-function openModal(mode, id) {
-  document.getElementById("modalBg").classList.add("open");
-  document.getElementById("editId").value = "";
-  ["fNombre","fUsuario","fCorreo","fPassword","fCedula","fCargo","fFechaIngreso"]
-    .forEach(f => document.getElementById(f).value = "");
-  document.getElementById("fGrupo").value  = "Super Users";
-  document.getElementById("fEstado").value = "Activo";
+      <!-- NUEVOS CAMPOS -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cédula de ciudadanía</label>
+          <input type="text" id="fCedula" placeholder="1234567890"/>
+        </div>
+        <div class="form-group">
+          <label>Fecha de ingreso</label>
+          <input type="date" id="fFechaIngreso"/>
+        </div>
+      </div>
  
-  if (mode === "edit" && id) {
-    const u = users.find(x => x.id === id);
-    if (!u) return;
-    document.getElementById("modalTitle").textContent   = "Editar Usuario";
-    document.getElementById("editId").value             = u.id;
-    document.getElementById("fNombre").value            = u.nombre;
-    document.getElementById("fUsuario").value           = u.usuario;
-    document.getElementById("fCorreo").value            = u.correo;
-    document.getElementById("fCedula").value            = u.cedula       || "";
-    document.getElementById("fCargo").value             = u.cargo        || "";
-    document.getElementById("fFechaIngreso").value      = u.fechaIngreso || "";
-    document.getElementById("fGrupo").value             = u.grupo;
-    document.getElementById("fEstado").value            = u.estado;
-  } else {
-    document.getElementById("modalTitle").textContent = "Nuevo Usuario";
-  }
-}
+      <div class="form-group">
+        <label>Cargo</label>
+        <input type="text" id="fCargo" placeholder="Ej: Analista de Sistemas"/>
+      </div>
+      <!-- FIN NUEVOS CAMPOS -->
  
-function closeModal() {
-  document.getElementById("modalBg").classList.remove("open");
-}
+      <div class="form-row">
+        <div class="form-group">
+          <label>Grupo</label>
+          <select id="fGrupo">
+            <option>Super Users</option>
+            <option>Usuarios</option>
+            <option>Operadores</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="fEstado">
+            <option>Activo</option>
+            <option>Inactivo</option>
+            <option>Bloqueado</option>
+          </select>
+        </div>
+      </div>
  
-function saveUser() {
-  const nombre       = document.getElementById("fNombre").value.trim();
-  const usuario      = document.getElementById("fUsuario").value.trim();
-  const correo       = document.getElementById("fCorreo").value.trim();
-  const cedula       = document.getElementById("fCedula").value.trim();
-  const cargo        = document.getElementById("fCargo").value.trim();
-  const fechaIngreso = document.getElementById("fFechaIngreso").value;
-  const grupo        = document.getElementById("fGrupo").value;
-  const estado       = document.getElementById("fEstado").value;
-  const editId       = document.getElementById("editId").value;
+      <div class="form-group">
+        <label>Contraseña <span style="font-size:.72rem;color:var(--text-muted);">(dejar vacío para no cambiar)</span></label>
+        <input type="password" id="fPassword" placeholder="••••••••"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-green"   onclick="saveUser()">💾 Guardar usuario</button>
+    </div>
+  </div>
+</div>
  
-  if (!nombre || !usuario || !correo) {
-    showToast("⚠ Completa los campos requeridos: Nombre, Usuario y Correo.");
-    return;
-  }
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal-bg" id="confirmBg">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-header" style="background:var(--danger);">
+      <h3>Confirmar eliminación</h3>
+      <button class="modal-close" onclick="document.getElementById('confirmBg').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.9rem;">
+        ¿Estás seguro de que deseas eliminar al usuario <strong id="deleteUserName"></strong>?
+        Esta acción no se puede deshacer.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('confirmBg').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-danger"  onclick="confirmDelete()">🗑 Eliminar</button>
+    </div>
+  </div>
+</div>
  
-  if (editId) {
-    const u = users.find(x => x.id === +editId);
-    if (u) {
-      u.nombre = nombre; u.usuario = usuario; u.correo = correo;
-      u.cedula = cedula; u.cargo = cargo; u.fechaIngreso = fechaIngreso;
-      u.grupo  = grupo;  u.estado = estado;
-    }
-    showToast("✓ Usuario actualizado correctamente.");
-  } else {
-    users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, fechaIngreso, grupo, estado });
-    showToast("✓ Usuario creado correctamente.");
-  }
+<div class="toast" id="toast"></div>
  
-  persistir();   // ← GUARDAR EN LOCALSTORAGE
-  closeModal();
-  renderTable();
-}
- 
-/* ----------------------------------------------------------------
-   BLOQUEAR / ACTIVAR
-   ---------------------------------------------------------------- */
-function toggleStatus(id) {
-  const u = users.find(x => x.id === id);
-  if (!u) return;
-  u.estado = u.estado === "Bloqueado" ? "Activo" : "Bloqueado";
-  persistir();
-  renderTable();
-  showToast(`Usuario ${u.estado === "Bloqueado" ? "bloqueado" : "activado"}.`);
-}
- 
-/* ----------------------------------------------------------------
-   ELIMINAR
-   ---------------------------------------------------------------- */
-function askDelete(id) {
-  const u = users.find(x => x.id === id);
-  if (!u) return;
-  deleteTargetId = id;
-  document.getElementById("deleteUserName").textContent = u.nombre;
-  document.getElementById("confirmBg").classList.add("open");
-}
- 
-function confirmDelete() {
-  users = users.filter(x => x.id !== deleteTargetId);
-  document.getElementById("confirmBg").classList.remove("open");
-  persistir();
-  renderTable();
-  showToast("Usuario eliminado.");
-}
- 
-/* ----------------------------------------------------------------
-   IMPORTAR EXCEL
-   ---------------------------------------------------------------- */
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
- 
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const wb   = XLSX.read(ev.target.result, { type: "binary" });
-      const ws   = wb.Sheets[wb.SheetNames[0]];
-      const data = XLSX.utils.sheet_to_json(ws);
-      let added  = 0;
- 
-      data.forEach(row => {
-        const nombre       = row["Nombre"]       || row["nombre"]        || "";
-        const usuario      = row["Usuario"]      || row["usuario"]       || "";
-        const correo       = row["Correo"]       || row["correo"]        || row["Email"] || "";
-        const cedula       = row["Cédula"]       || row["Cedula"]        || row["cédula"] || row["CEDULA"] || row["CC"] || "";
-        const cargo        = row["Cargo"]        || row["cargo"]         || "";
-        const fechaIngreso = row["Fecha Ingreso"]|| row["FechaIngreso"]  || row["fecha_ingreso"] || "";
-        const grupo        = row["Grupo"]        || row["grupo"]         || "Usuarios";
-        const estado       = row["Estado"]       || row["estado"]        || "Activo";
- 
-        if (nombre && usuario) {
-          users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, fechaIngreso, grupo, estado });
-          added++;
-        }
-      });
- 
-      persistir();   // ← GUARDAR EN LOCALSTORAGE
-      renderTable();
-      showToast(`✓ ${added} usuario(s) importados desde Excel.`);
-    } catch(err) {
-      showToast("⚠ Error al leer el archivo. Verifica el formato.");
-    }
-  };
-  reader.readAsBinaryString(file);
-  e.target.value = "";
-}
- 
-/* ----------------------------------------------------------------
-   EXPORTAR EXCEL
-   ---------------------------------------------------------------- */
-function exportExcel() {
-  const data = users.map(u => ({
-    "ID":            u.id,
-    "Nombre":        u.nombre,
-    "Usuario":       u.usuario,
-    "Correo":        u.correo,
-    "Cédula":        u.cedula       || "",
-    "Cargo":         u.cargo        || "",
-    "Fecha Ingreso": u.fechaIngreso || "",
-    "Grupo":         u.grupo,
-    "Estado":        u.estado
-  }));
-  const ws = XLSX.utils.json_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Usuarios");
-  XLSX.writeFile(wb, "usuarios_acegrasco.xlsx");
-  showToast("✓ Archivo Excel descargado.");
-}
- 
-/* ----------------------------------------------------------------
-   DESCARGAR PLANTILLA
-   ---------------------------------------------------------------- */
-function downloadTemplate() {
-  const data = [{
-    "Nombre": "Ejemplo Apellido", "Usuario": "ejemplo.apellido",
-    "Correo": "ejemplo@acegrasco.com", "Cédula": "1234567890",
-    "Cargo": "Cargo del empleado", "Fecha Ingreso": "2023-01-15",
-    "Grupo": "Usuarios", "Estado": "Activo"
-  }];
-  const ws = XLSX.utils.json_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Usuarios");
-  XLSX.writeFile(wb, "plantilla_usuarios.xlsx");
-  showToast("✓ Plantilla descargada.");
-}
- 
-/* ----------------------------------------------------------------
-   INICIO DE SESIÓN desde usuario.html
-   Busca el usuario en localStorage y guarda su info en "sesionUsuario"
-   ---------------------------------------------------------------- */
-function iniciarSesion(usuarioInput, passwordInput) {
-  const users = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
-  // Buscar por usuario o correo (la contraseña no está implementada aún, 
-  // se valida solo que el usuario exista y esté Activo)
-  const encontrado = users.find(u =>
-    (u.usuario === usuarioInput || u.correo === usuarioInput) &&
-    u.estado === "Activo"
-  );
-  if (encontrado) {
-    localStorage.setItem("sesionUsuario", JSON.stringify(encontrado));
-    return true;
-  }
-  return false;
-}
- 
-/* ----------------------------------------------------------------
-   TOAST
-   ---------------------------------------------------------------- */
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  if (!t) return;
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3200);
-}
- 
-/* ----------------------------------------------------------------
-   DRAG & DROP
-   ---------------------------------------------------------------- */
-const zone = document.getElementById("dropZone");
-if (zone) {
-  zone.addEventListener("dragover",  e => { e.preventDefault(); zone.classList.add("dragover"); });
-  zone.addEventListener("dragleave", ()  => zone.classList.remove("dragover"));
-  zone.addEventListener("drop", e => {
-    e.preventDefault();
-    zone.classList.remove("dragover");
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile({ target: { files: [file], value: "" } });
-  });
-}
- 
-/* ----------------------------------------------------------------
-   ARRANQUE
-   ---------------------------------------------------------------- */
-inicializar();
+<script src="js/gestiondeusuarios.js"></script>
+</body>
+</html>
 
 
 
