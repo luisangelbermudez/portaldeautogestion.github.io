@@ -243,7 +243,7 @@ function handleFile(e) {
         const nombre       = row["Nombre"]       || row["nombre"]        || "";
         const usuario      = row["Usuario"]      || row["usuario"]       || "";
         const correo       = row["Correo"]       || row["correo"]        || row["Email"] || "";
-        const cedula       = row["Cedula"]       || row["cédula"]        || row["CC"]    || "";
+        const cedula       = row["Cédula"]       || row["Cedula"]        || row["cédula"] || row["CEDULA"] || row["CC"] || "";
         const cargo        = row["Cargo"]        || row["cargo"]         || "";
         const fechaIngreso = row["Fecha Ingreso"]|| row["FechaIngreso"]  || row["fecha_ingreso"] || "";
         const grupo        = row["Grupo"]        || row["grupo"]         || "Usuarios";
