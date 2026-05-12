@@ -1,46 +1,45 @@
- /* ============================================================
-   SECCIÓN: LOGIN (index.html)
-   ============================================================ */
-
-function login() {
-    let rol = document.getElementById("rol").value;
-    localStorage.setItem("rolUsuario", rol);
-
-    if (rol === "admin") {
-        window.location.href = "admin.html";
-    } else {
-        window.location.href = "usuario.html";
+    /* Cambiar pestaña login/registro */
+    function cambiarTab(id, btn) {
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("activo"));
+      document.querySelectorAll(".tab-btn").forEach(b   => b.classList.remove("activo"));
+      document.getElementById("tab-" + id).classList.add("activo");
+      btn.classList.add("activo");
+      document.getElementById("loginError").style.display = "none";
     }
-}
 
-// Mostrar nombre del usuario logueado (si existe en el DOM)
-let nombreGuardado = localStorage.getItem("nombreUsuario");
-let elNombre = document.getElementById("nombreUsuario");
-if (elNombre && nombreGuardado) {
-    elNombre.innerText = nombreGuardado;
-}
- 
- 
- const slides = document.getElementById('slides');
-  const dotsEl = document.getElementById('dots');
-  let current = 0;
-  const total = 3;
-  const dots = [];
+    /* ── LOGIN: busca el usuario en localStorage "acegrasco_users" ── */
+    function hacerLogin() {
+      const input = document.getElementById("loginUsuario").value.trim().toLowerCase();
+      const error = document.getElementById("loginError");
 
-  for (let i = 0; i < total; i++) {
-    const d = document.createElement('button');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goTo(i);
-    dotsEl.appendChild(d);
-    dots.push(d);
-  }
+      // Cargar usuarios guardados
+      let users = [];
+      try { users = JSON.parse(localStorage.getItem("acegrasco_users") || "[]"); } catch(e){}
 
-  function goTo(n) {
-    current = (n + total) % total;
-    slides.style.transform = `translateX(-${current * 100}%)`;
-    dots.forEach((d, i) => d.classList.toggle('active', i === current));
-  }
+      // Si no hay usuarios aún, redirigir igual (modo demo sin base cargada)
+      if (users.length === 0) {
+        localStorage.removeItem("sesionUsuario");
+        window.location.href = "usuario.html";
+        return;
+      }
 
-  function moveSlide(dir) { goTo(current + dir); }
+      // Buscar por usuario o correo, que esté Activo
+      const encontrado = users.find(u =>
+        (u.usuario.toLowerCase() === input || u.correo.toLowerCase() === input) &&
+        u.estado === "Activo"
+      );
 
-  setInterval(() => moveSlide(1), 5000);
+      if (encontrado) {
+        // Guardar sesión completa
+        localStorage.setItem("sesionUsuario", JSON.stringify(encontrado));
+        error.style.display = "none";
+        window.location.href = "usuario.html";
+      } else {
+        error.style.display = "block";
+      }
+    }
+
+    /* Enter para ingresar */
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") hacerLogin();
+    });
