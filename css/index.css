@@ -171,8 +171,8 @@
       color: #fff;
     }
     .sidebar-header .logo-img {
-      width: 180px;
-      height: 110px;
+      width: 320px;
+      height: 120px;
       object-fit: contain;
       border-radius: 8px;
       background: rgba(255,255,255,0.12);
