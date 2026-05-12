@@ -81,7 +81,7 @@
         nombre:  sesion.nombre       || "—",
         cedula:  sesion.cedula       || "—",
         cargo:   sesion.cargo        || "—",
-        area:    sesion.grupo        || "—",
+        area:    sesion.area        || "—",
         salario: sesion.salario      || "—",
         ingreso: sesion.fechaIngreso || "—",
         email:   sesion.correo       || "—"
