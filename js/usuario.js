@@ -6,22 +6,32 @@
     function cargarSesion() {
       try { sesion = JSON.parse(localStorage.getItem("sesionUsuario") || "null"); } catch(e){}
 
-      if (sesion) {
-        document.getElementById("nombreEmpleado").textContent = sesion.nombre      || "—";
-        document.getElementById("cargoEmpleado").textContent  = "📌 Cargo: "  + (sesion.cargo  || "—");
-        document.getElementById("cedulaEmpleado").textContent = "🪪 Cédula: " + (sesion.cedula || "—");
-        document.getElementById("correoEmpleado").textContent = "✉ Correo: "  + (sesion.correo || "—");
-
-        if (sesion.fechaIngreso) {
-          document.getElementById("tiempoEmpleado").textContent = "🕐 Tiempo: " + calcularTiempo(sesion.fechaIngreso);
-        }
-
-        // Prellenar el formulario de solicitud con los datos de la sesión
-        var fNombre = document.getElementById("nombre");
-        var fEmail  = document.getElementById("email");
-        if (fNombre && !fNombre.value) fNombre.value = sesion.nombre || "";
-        if (fEmail  && !fEmail.value)  fEmail.value  = sesion.correo || "";
+      // Si no hay sesión activa, redirigir al login
+      if (!sesion) {
+        window.location.href = "index.html";
+        return;
       }
+
+      // Control de acceso por grupo
+      const esSuperUser = sesion.grupo === "Super Users";
+      const btnAdmin    = document.getElementById("btnAdmin");
+      if (btnAdmin) btnAdmin.style.display = esSuperUser ? "inline-flex" : "none";
+
+      // Llenar datos del perfil
+      document.getElementById("nombreEmpleado").textContent = sesion.nombre      || "—";
+      document.getElementById("cargoEmpleado").textContent  = "📌 Cargo: "  + (sesion.cargo  || "—");
+      document.getElementById("cedulaEmpleado").textContent = "🪪 Cédula: " + (sesion.cedula || "—");
+      document.getElementById("correoEmpleado").textContent = "✉ Correo: "  + (sesion.correo || "—");
+
+      if (sesion.fechaIngreso) {
+        document.getElementById("tiempoEmpleado").textContent = "🕐 Tiempo: " + calcularTiempo(sesion.fechaIngreso);
+      }
+
+      // Prellenar el formulario de solicitud con los datos de la sesión
+      var fNombre = document.getElementById("nombre");
+      var fEmail  = document.getElementById("email");
+      if (fNombre && !fNombre.value) fNombre.value = sesion.nombre || "";
+      if (fEmail  && !fEmail.value)  fEmail.value  = sesion.correo || "";
     }
 
     function calcularTiempo(fechaStr) {
@@ -71,7 +81,7 @@
         nombre:  sesion.nombre       || "—",
         cedula:  sesion.cedula       || "—",
         cargo:   sesion.cargo        || "—",
-        area:    sesion.area        || "—",
+        area:    sesion.grupo        || "—",
         salario: sesion.salario      || "—",
         ingreso: sesion.fechaIngreso || "—",
         email:   sesion.correo       || "—"
