@@ -6,7 +6,10 @@
     "correo": "jltrivino@acegrasco.com",
     "cedula": "1234567890",
     "cargo": "Gerente General",
+    "area": "Gerencia",
     "fechaIngreso": "2018-03-15",
+    "salario": 8500000,
+    "promedioExtras": 320000,
     "grupo": "Super Users",
     "estado": "Activo"
   },
@@ -17,7 +20,10 @@
     "correo": "gsilvana@acegrasco.com",
     "cedula": "9876543210",
     "cargo": "Coordinadora RRHH",
+    "area": "Recursos Humanos",
     "fechaIngreso": "2019-07-01",
+    "salario": 4200000,
+    "promedioExtras": 180000,
     "grupo": "Super Users",
     "estado": "Activo"
   },
@@ -28,7 +34,10 @@
     "correo": "racevedo@acegrasco.com",
     "cedula": "1122334455",
     "cargo": "Analista de Sistemas",
+    "area": "Tecnología",
     "fechaIngreso": "2020-11-10",
+    "salario": 3800000,
+    "promedioExtras": 250000,
     "grupo": "Super Users",
     "estado": "Activo"
   },
@@ -39,7 +48,10 @@
     "correo": "nluna@acegrasco.com",
     "cedula": "5566778899",
     "cargo": "Auxiliar Contable",
+    "area": "Contabilidad",
     "fechaIngreso": "2021-05-20",
+    "salario": 1800000,
+    "promedioExtras": 95000,
     "grupo": "Usuarios",
     "estado": "Activo"
   }
