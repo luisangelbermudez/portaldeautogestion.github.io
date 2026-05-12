@@ -175,16 +175,20 @@ function saveUser() {
     return;
   }
  
+  const password = document.getElementById("fPassword").value;
+
   if (editId) {
     const u = users.find(x => x.id === +editId);
     if (u) {
       u.nombre = nombre; u.usuario = usuario; u.correo = correo;
       u.cedula = cedula; u.cargo = cargo; u.fechaIngreso = fechaIngreso;
       u.grupo  = grupo;  u.estado = estado;
+      // Solo actualizar contraseña si el admin escribió una nueva
+      if (password) u.password = password;
     }
     showToast("✓ Usuario actualizado correctamente.");
   } else {
-    users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, fechaIngreso, grupo, estado });
+    users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, fechaIngreso, grupo, estado, password: password || "" });
     showToast("✓ Usuario creado correctamente.");
   }
  
