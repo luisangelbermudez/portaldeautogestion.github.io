@@ -42,47 +42,35 @@
         <option value="May">Mayo</option>
       </select>
       <button class="btn btn-outline" onclick="exportExcel()">&#8659; Exportar Excel</button>
-      <button class="btn btn-green" onclick="generateReport()">&#128196; Generar reporte PDF</button>
+      <button class="btn btn-blue" onclick="generateReport()">&#128196; Generar reporte PDF</button>
     </div>
   </div>
 
-  <!-- KPI CARDS -->
+  <!-- KPI CARDS (Costo operativo, Satisfacción removidos) -->
   <div class="kpi-grid">
-    <div class="kpi-card green">
+    <div class="kpi-card blue">
       <div class="kpi-label">Solicitudes hoy</div>
-      <div class="kpi-value green" id="kpiHoy">24</div>
+      <div class="kpi-value blue" id="kpiHoy">—</div>
       <div class="kpi-sub">+8% vs ayer</div>
       <div class="kpi-icon">&#128196;</div>
     </div>
-    <div class="kpi-card green">
+    <div class="kpi-card blue">
       <div class="kpi-label">Aprobadas</div>
-      <div class="kpi-value green" id="kpiAprobadas">148</div>
+      <div class="kpi-value blue" id="kpiAprobadas">—</div>
       <div class="kpi-sub">del total del mes</div>
       <div class="kpi-icon">&#10003;</div>
     </div>
     <div class="kpi-card amber">
       <div class="kpi-label">Pendientes</div>
-      <div class="kpi-value amber" id="kpiPendientes">35</div>
+      <div class="kpi-value amber" id="kpiPendientes">—</div>
       <div class="kpi-sub">requieren atención</div>
       <div class="kpi-icon">&#9201;</div>
     </div>
-    <div class="kpi-card blue">
+    <div class="kpi-card cyan">
       <div class="kpi-label">Tiempo promedio</div>
-      <div class="kpi-value blue" id="kpiTiempo">9.7</div>
+      <div class="kpi-value cyan" id="kpiTiempo">—</div>
       <div class="kpi-sub">días de resolución</div>
       <div class="kpi-icon">&#128337;</div>
-    </div>
-    <div class="kpi-card green">
-      <div class="kpi-label">Satisfacción</div>
-      <div class="kpi-value green" id="kpiSat">87.9%</div>
-      <div class="kpi-sub">calificación usuarios</div>
-      <div class="kpi-icon">&#9733;</div>
-    </div>
-    <div class="kpi-card amber">
-      <div class="kpi-label">Costo operativo</div>
-      <div class="kpi-value amber">$14M</div>
-      <div class="kpi-sub">mes en curso</div>
-      <div class="kpi-icon">&#128181;</div>
     </div>
   </div>
 
@@ -92,33 +80,33 @@
       <div class="user-icon g">&#128101;</div>
       <div>
         <div class="user-stat-label">Usuarios activos</div>
-        <div class="user-stat-val" style="color:var(--primary);">4</div>
+        <div class="user-stat-val" style="color:var(--primary);" id="kpiUsuariosActivos">—</div>
       </div>
     </div>
     <div class="user-stat-card">
       <div class="user-icon b">&#128101;</div>
       <div>
         <div class="user-stat-label">Super Users</div>
-        <div class="user-stat-val" style="color:#185FA5;">4</div>
+        <div class="user-stat-val" style="color:#0284C7;" id="kpiSuperUsers">—</div>
       </div>
     </div>
     <div class="user-stat-card">
       <div class="user-icon r">&#128274;</div>
       <div>
         <div class="user-stat-label">Bloqueados</div>
-        <div class="user-stat-val" style="color:#A32D2D;">0</div>
+        <div class="user-stat-val" style="color:#991B1B;" id="kpiBloqueados">—</div>
       </div>
     </div>
     <div class="user-stat-card">
       <div class="user-icon a">&#9203;</div>
       <div>
         <div class="user-stat-label">Sin actividad 30d</div>
-        <div class="user-stat-val" style="color:#854F0B;">1</div>
+        <div class="user-stat-val" style="color:#92400E;" id="kpiSinActividad">—</div>
       </div>
     </div>
   </div>
 
-  <!-- CHARTS -->
+  <!-- CHARTS (Satisfacción por mes removida) -->
   <div class="charts-grid">
     <div class="chart-card">
       <div class="chart-title">Solicitudes por departamento</div>
@@ -135,15 +123,10 @@
       <div class="chart-subtitle">Evolución Ene – May 2026</div>
       <div class="chart-wrap" style="height:220px;"><canvas id="chartTrend"></canvas></div>
     </div>
-    <div class="chart-card">
+    <div class="chart-card full">
       <div class="chart-title">Tiempo promedio de resolución</div>
       <div class="chart-subtitle">Días promedio por departamento</div>
-      <div class="chart-wrap"><canvas id="chartTime"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Satisfacción por mes</div>
-      <div class="chart-subtitle">% de calificaciones positivas</div>
-      <div class="chart-wrap"><canvas id="chartSat"></canvas></div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chartTime"></canvas></div>
     </div>
   </div>
 
@@ -151,7 +134,7 @@
   <div class="table-card">
     <div class="table-header">
       <h3>&#128196; Historial de reportes generados</h3>
-      <button class="btn btn-green" onclick="addReport()">&#43; Nuevo</button>
+      <button class="btn btn-blue" onclick="addReport()">&#43; Nuevo</button>
     </div>
     <table>
       <thead>
@@ -169,8 +152,9 @@
     </table>
   </div>
 </main>
-</body>
+
 <script src="js/reportes.js"></script>
+</body>
 </html>
 
 
