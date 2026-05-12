@@ -54,7 +54,7 @@
       </div>
       <input type="file" id="xlsxInput" accept=".xlsx,.xls" onchange="handleFile(event)"/>
       <div class="template-note">
-        Columnas requeridas: Nombre · Usuario · Correo · Cédula · Cargo · Fecha Ingreso · Grupo · Estado
+        Columnas requeridas: Nombre · Usuario · Correo · Cédula · Cargo · Área · Fecha Ingreso · Salario · Promedio Extras · Grupo · Estado
       </div>
     </div>
  
@@ -89,6 +89,7 @@
             <th onclick="sortBy('cedula')">Cédula ↕</th>
             <th onclick="sortBy('cargo')">Cargo ↕</th>
             <th onclick="sortBy('fechaIngreso')">Fecha Ingreso ↕</th>
+            <th onclick="sortBy('area')">Área ↕</th>
             <th onclick="sortBy('grupo')">Grupo ↕</th>
             <th>Correo</th>
             <th onclick="sortBy('estado')">Estado ↕</th>
@@ -148,6 +149,22 @@
       <div class="form-group">
         <label>Cargo</label>
         <input type="text" id="fCargo" placeholder="Ej: Analista de Sistemas"/>
+      </div>
+
+      <div class="form-group">
+        <label>Área / Departamento</label>
+        <input type="text" id="fArea" placeholder="Ej: Tecnología, Contabilidad, RRHH"/>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Salario básico mensual ($)</label>
+          <input type="number" id="fSalario" placeholder="Ej: 2500000" min="0"/>
+        </div>
+        <div class="form-group">
+          <label>Promedio extras mensual ($)</label>
+          <input type="number" id="fPromedioExtras" placeholder="Ej: 150000" min="0"/>
+        </div>
       </div>
       <!-- FIN NUEVOS CAMPOS -->
  
