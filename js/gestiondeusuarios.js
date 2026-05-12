@@ -106,6 +106,7 @@ function renderTable() {
       <td style="font-size:.82rem;">${u.cedula  || "—"}</td>
       <td style="font-size:.82rem;">${u.cargo   || "—"}</td>
       <td style="font-size:.82rem;">${u.fechaIngreso || "—"}</td>
+      <td style="font-size:.82rem;">${u.area || "—"}</td>
       <td><span style="font-size:.82rem;">${u.grupo}</span></td>
       <td style="font-size:.82rem;color:var(--primary);">${u.correo}</td>
       <td><span class="badge ${badgeClass(u.estado)}">${u.estado}</span></td>
@@ -132,7 +133,7 @@ function sortBy(key) {
 function openModal(mode, id) {
   document.getElementById("modalBg").classList.add("open");
   document.getElementById("editId").value = "";
-  ["fNombre","fUsuario","fCorreo","fPassword","fCedula","fCargo","fFechaIngreso"]
+  ["fNombre","fUsuario","fCorreo","fPassword","fCedula","fCargo","fFechaIngreso","fArea","fSalario","fPromedioExtras"]
     .forEach(f => document.getElementById(f).value = "");
   document.getElementById("fGrupo").value  = "Super Users";
   document.getElementById("fEstado").value = "Activo";
@@ -145,11 +146,14 @@ function openModal(mode, id) {
     document.getElementById("fNombre").value            = u.nombre;
     document.getElementById("fUsuario").value           = u.usuario;
     document.getElementById("fCorreo").value            = u.correo;
-    document.getElementById("fCedula").value            = u.cedula       || "";
-    document.getElementById("fCargo").value             = u.cargo        || "";
-    document.getElementById("fFechaIngreso").value      = u.fechaIngreso || "";
-    document.getElementById("fGrupo").value             = u.grupo;
-    document.getElementById("fEstado").value            = u.estado;
+    document.getElementById("fCedula").value            = u.cedula         || "";
+    document.getElementById("fCargo").value              = u.cargo          || "";
+    document.getElementById("fArea").value               = u.area           || "";
+    document.getElementById("fFechaIngreso").value       = u.fechaIngreso   || "";
+    document.getElementById("fSalario").value            = u.salario        || "";
+    document.getElementById("fPromedioExtras").value     = u.promedioExtras || "";
+    document.getElementById("fGrupo").value              = u.grupo;
+    document.getElementById("fEstado").value             = u.estado;
   } else {
     document.getElementById("modalTitle").textContent = "Nuevo Usuario";
   }
@@ -163,12 +167,15 @@ function saveUser() {
   const nombre       = document.getElementById("fNombre").value.trim();
   const usuario      = document.getElementById("fUsuario").value.trim();
   const correo       = document.getElementById("fCorreo").value.trim();
-  const cedula       = document.getElementById("fCedula").value.trim();
-  const cargo        = document.getElementById("fCargo").value.trim();
-  const fechaIngreso = document.getElementById("fFechaIngreso").value;
-  const grupo        = document.getElementById("fGrupo").value;
-  const estado       = document.getElementById("fEstado").value;
-  const editId       = document.getElementById("editId").value;
+  const cedula         = document.getElementById("fCedula").value.trim();
+  const cargo          = document.getElementById("fCargo").value.trim();
+  const area           = document.getElementById("fArea").value.trim();
+  const fechaIngreso   = document.getElementById("fFechaIngreso").value;
+  const salario        = parseFloat(document.getElementById("fSalario").value) || 0;
+  const promedioExtras = parseFloat(document.getElementById("fPromedioExtras").value) || 0;
+  const grupo          = document.getElementById("fGrupo").value;
+  const estado         = document.getElementById("fEstado").value;
+  const editId         = document.getElementById("editId").value;
  
   if (!nombre || !usuario || !correo) {
     showToast("⚠ Completa los campos requeridos: Nombre, Usuario y Correo.");
@@ -181,14 +188,15 @@ function saveUser() {
     const u = users.find(x => x.id === +editId);
     if (u) {
       u.nombre = nombre; u.usuario = usuario; u.correo = correo;
-      u.cedula = cedula; u.cargo = cargo; u.fechaIngreso = fechaIngreso;
+      u.cedula = cedula; u.cargo = cargo; u.area = area;
+      u.fechaIngreso = fechaIngreso; u.salario = salario;
+      u.promedioExtras = promedioExtras;
       u.grupo  = grupo;  u.estado = estado;
-      // Solo actualizar contraseña si el admin escribió una nueva
       if (password) u.password = password;
     }
     showToast("✓ Usuario actualizado correctamente.");
   } else {
-    users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, fechaIngreso, grupo, estado, password: password || "" });
+    users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, area, fechaIngreso, salario, promedioExtras, grupo, estado, password: password || "" });
     showToast("✓ Usuario creado correctamente.");
   }
  
@@ -248,13 +256,16 @@ function handleFile(e) {
         const usuario      = row["Usuario"]      || row["usuario"]       || "";
         const correo       = row["Correo"]       || row["correo"]        || row["Email"] || "";
         const cedula       = row["Cédula"]       || row["Cedula"]        || row["cédula"] || row["CEDULA"] || row["CC"] || "";
-        const cargo        = row["Cargo"]        || row["cargo"]         || "";
-        const fechaIngreso = row["Fecha Ingreso"]|| row["FechaIngreso"]  || row["fecha_ingreso"] || "";
-        const grupo        = row["Grupo"]        || row["grupo"]         || "Usuarios";
-        const estado       = row["Estado"]       || row["estado"]        || "Activo";
- 
+        const cargo          = row["Cargo"]          || row["cargo"]          || "";
+        const area           = row["Área"]           || row["Area"]           || row["área"] || "";
+        const fechaIngreso   = row["Fecha Ingreso"]  || row["FechaIngreso"]   || row["fecha_ingreso"] || "";
+        const salario        = parseFloat(row["Salario"] || row["salario"] || row["Salario Básico"] || 0) || 0;
+        const promedioExtras = parseFloat(row["Promedio Extras"] || row["PromedioExtras"] || row["promedio_extras"] || 0) || 0;
+        const grupo          = row["Grupo"]          || row["grupo"]          || "Usuarios";
+        const estado         = row["Estado"]         || row["estado"]         || "Activo";
+
         if (nombre && usuario) {
-          users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, fechaIngreso, grupo, estado });
+          users.push({ id: nextId++, nombre, usuario, correo, cedula, cargo, area, fechaIngreso, salario, promedioExtras, grupo, estado });
           added++;
         }
       });
@@ -275,15 +286,18 @@ function handleFile(e) {
    ---------------------------------------------------------------- */
 function exportExcel() {
   const data = users.map(u => ({
-    "ID":            u.id,
-    "Nombre":        u.nombre,
-    "Usuario":       u.usuario,
-    "Correo":        u.correo,
-    "Cédula":        u.cedula       || "",
-    "Cargo":         u.cargo        || "",
-    "Fecha Ingreso": u.fechaIngreso || "",
-    "Grupo":         u.grupo,
-    "Estado":        u.estado
+    "ID":                  u.id,
+    "Nombre":              u.nombre,
+    "Usuario":             u.usuario,
+    "Correo":              u.correo,
+    "Cédula":              u.cedula          || "",
+    "Cargo":               u.cargo           || "",
+    "Área":                u.area            || "",
+    "Fecha Ingreso":       u.fechaIngreso    || "",
+    "Salario":             u.salario         || 0,
+    "Promedio Extras":     u.promedioExtras  || 0,
+    "Grupo":               u.grupo,
+    "Estado":              u.estado
   }));
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
@@ -299,8 +313,9 @@ function downloadTemplate() {
   const data = [{
     "Nombre": "Ejemplo Apellido", "Usuario": "ejemplo.apellido",
     "Correo": "ejemplo@acegrasco.com", "Cédula": "1234567890",
-    "Cargo": "Cargo del empleado", "Fecha Ingreso": "2023-01-15",
-    "Grupo": "Usuarios", "Estado": "Activo"
+    "Cargo": "Cargo del empleado", "Área": "Departamento",
+    "Fecha Ingreso": "2023-01-15", "Salario": 2500000,
+    "Promedio Extras": 150000, "Grupo": "Usuarios", "Estado": "Activo"
   }];
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
