@@ -10,7 +10,7 @@ import com.acegrasco.vista.MenuPrincipal;
  * Programa  : Análisis y Desarrollo de Software – SENA
  * Tecnologías: Java 17 · JDBC · MySQL 8 · IntelliJ IDEA
  *
- * @author [Tu nombre]
+ * @author Grupo 9
  * @version 1.0
  */
 public class Main {
@@ -18,7 +18,6 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("================================================");
         System.out.println("  PORTAL DE AUTOGESTIÓN – ACEGRASCO S.A.        ");
-        System.out.println("  Evidencia GA7-220501096-AA2-EV01               ");
         System.out.println("================================================");
 
         MenuPrincipal menu = new MenuPrincipal();
