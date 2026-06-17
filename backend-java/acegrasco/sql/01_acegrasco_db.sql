@@ -37,13 +37,13 @@ CREATE TABLE IF NOT EXISTS solicitudes (
 -- ── Datos iniciales ──────────────────────────────────────────
 -- Contraseña admin123456 → SHA-256
 INSERT INTO usuarios (nombre_completo, correo, contrasena, rol) VALUES
-('Jose Leonardo Triviño',  'jltrivino@acegrasco.com.co', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN'),
-('Gennifer Silvana',       'gsilvana@acegrasco.com.co',  '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN'),
-('Richard Acevedo',        'racevedo@acegrasco.com.co',  '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN'),
-('Nicolas Luna',           'nluna@acegrasco.com.co',     '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN');
+('Jose Leonardo Triviño',  'jltrivino@acegrasco.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN'),
+('Gennifer Silvana',       'gsilvana@acegrasco.com',  '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN'),
+('Richard Acevedo',        'racevedo@acegrasco.com',  '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN'),
+('Nicolas Luna',           'nluna@acegrasco.com',     '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'ADMIN');
 
 INSERT INTO usuarios (nombre_completo, correo, contrasena, rol) VALUES
-('Julio Cesar Sanchez', 'jcsanchez@acegrasco.com.co',
+('Julio Cesar Sanchez', 'jcsanchez@acegrasco.com',
  '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'USUARIO');
 
 INSERT INTO solicitudes (id_usuario, tipo_solicitud, descripcion, estado) VALUES
