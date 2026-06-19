@@ -1,0 +1,68 @@
+EVIDENCIA GA7-220501096-AA2-EV01
+Codificación de módulos del software
+Portal de Autogestión - Acegrasco S.A.
+
+=============================================
+ENLACE AL REPOSITORIO EN GITHUB
+=============================================
+
+https://github.com/luisangelbermudez/portaldeautogestion.github.io
+
+=============================================
+DESCRIPCIÓN DEL MÓDULO
+=============================================
+
+Módulo Java con conexión JDBC a MySQL que implementa
+las operaciones CRUD sobre las tablas principales del
+sistema Portal de Autogestión de Acegrasco S.A.
+
+=============================================
+ESTRUCTURA DEL PROYECTO
+=============================================
+
+src/main/java/co/acegrasco/
+  conexion/
+    Conexion.java          ← Singleton JDBC (patrón Singleton)
+  modelo/
+    Usuario.java           ← Entidad usuario
+    Empleado.java          ← Entidad empleado
+    Solicitud.java         ← Entidad solicitud
+  dao/
+    UsuarioDao.java        ← CRUD usuarios (INSERT, SELECT, UPDATE, DELETE)
+    EmpleadoDao.java       ← CRUD empleados
+    SolicitudDao.java      ← CRUD solicitudes
+  util/
+    Consola.java           ← Utilidades de presentación en consola
+  menu/
+    MenuUsuarios.java      ← Menú interactivo usuarios
+    MenuEmpleados.java     ← Menú interactivo empleados
+    MenuSolicitudes.java   ← Menú interactivo solicitudes
+    Main.java              ← Punto de entrada del programa
+
+=============================================
+INSTRUCCIONES DE EJECUCIÓN
+=============================================
+
+Requisitos:
+  - Java 17 o superior
+  - Maven 3.8+
+  - XAMPP con MySQL corriendo
+
+Pasos:
+  1. Importar el SQL en phpMyAdmin (127.0.0.1/phpmyadmin)
+  2. Abrir el proyecto en IntelliJ IDEA
+  3. Esperar que Maven descargue dependencias
+  4. Ejecutar la clase Main.java
+
+=============================================
+ESTÁNDARES DE CODIFICACIÓN APLICADOS
+=============================================
+
+  - Paquetes   : co.acegrasco.[modulo]  (minúsculas)
+  - Clases     : PascalCase             (ej: UsuarioDao)
+  - Métodos    : camelCase              (ej: consultarTodos)
+  - Variables  : camelCase              (ej: idUsuario)
+  - Constantes : UPPER_SNAKE_CASE       (ej: DB_HOST)
+  - PreparedStatement en todas las consultas SQL
+  - Patrón DAO para separar lógica de datos
+  - Patrón Singleton para la conexión
