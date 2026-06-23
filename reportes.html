@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reportes - Portal Acegrasco</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="css/reportes.css">
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="admin.html">Portal <span>Acegrasco</span> &rsaquo; Reportes</a>
+  <a href="admin.html">&#127968; Administrador</a>
+  <a href="gestiondeusuarios.html">&#128101; Usuarios</a>
+  <a href="index.html">&#128682; Salir</a>
+</nav>
+
+<main class="main">
+
+  <!-- ENCABEZADO -->
+  <div class="page-header">
+    <div>
+      <h1>&#128202; Dashboard de Reportes</h1>
+      <p>Resumen ejecutivo del Portal de Autogestión &mdash; Acegrasco S.A.</p>
+    </div>
+    <div class="header-actions">
+      <select class="ctrl" id="deptFilter" onchange="updateCharts()">
+        <option value="all">Todos los departamentos</option>
+        <option value="RRHH">Recursos Humanos</option>
+        <option value="TI">Tecnología</option>
+        <option value="Finanzas">Finanzas</option>
+        <option value="Operaciones">Operaciones</option>
+        <option value="Legal">Legal</option>
+      </select>
+      <select class="ctrl" id="mesFilter" onchange="updateCharts()">
+        <option value="all">Todos los meses</option>
+        <option value="Ene">Enero</option>
+        <option value="Feb">Febrero</option>
+        <option value="Mar">Marzo</option>
+        <option value="Abr">Abril</option>
+        <option value="May">Mayo</option>
+      </select>
+      <button class="btn btn-outline" onclick="exportExcel()">&#8659; Exportar Excel</button>
+      <button class="btn btn-blue" onclick="generateReport()">&#128196; Generar reporte PDF</button>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-label">Solicitudes hoy</div>
+      <div class="kpi-value blue" id="kpiHoy">—</div>
+      <div class="kpi-sub">+8% vs ayer</div>
+      <div class="kpi-icon">&#128196;</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Aprobadas</div>
+      <div class="kpi-value blue" id="kpiAprobadas">—</div>
+      <div class="kpi-sub">del total del mes</div>
+      <div class="kpi-icon">&#10003;</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Pendientes</div>
+      <div class="kpi-value amber" id="kpiPendientes">—</div>
+      <div class="kpi-sub">requieren atención</div>
+      <div class="kpi-icon">&#9201;</div>
+    </div>
+    <div class="kpi-card cyan">
+      <div class="kpi-label">Tiempo promedio</div>
+      <div class="kpi-value cyan" id="kpiTiempo">—</div>
+      <div class="kpi-sub">días de resolución</div>
+      <div class="kpi-icon">&#128337;</div>
+    </div>
+  </div>
+
+  <!-- USER SUMMARY -->
+  <div class="user-grid">
+    <div class="user-stat-card">
+      <div class="user-icon g">&#128101;</div>
+      <div>
+        <div class="user-stat-label">Usuarios activos</div>
+        <div class="user-stat-val" style="color:var(--primary);" id="kpiUsuariosActivos">—</div>
+      </div>
+    </div>
+    <div class="user-stat-card">
+      <div class="user-icon b">&#128101;</div>
+      <div>
+        <div class="user-stat-label">Super Users</div>
+        <div class="user-stat-val" style="color:#0284C7;" id="kpiSuperUsers">—</div>
+      </div>
+    </div>
+    <div class="user-stat-card">
+      <div class="user-icon r">&#128274;</div>
+      <div>
+        <div class="user-stat-label">Bloqueados</div>
+        <div class="user-stat-val" style="color:#991B1B;" id="kpiBloqueados">—</div>
+      </div>
+    </div>
+    <div class="user-stat-card">
+      <div class="user-icon a">&#9203;</div>
+      <div>
+        <div class="user-stat-label">Sin actividad 30d</div>
+        <div class="user-stat-val" style="color:#92400E;" id="kpiSinActividad">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Solicitudes por departamento</div>
+      <div class="chart-subtitle">Distribución en el período seleccionado</div>
+      <div class="chart-wrap"><canvas id="chartDept"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Estado de solicitudes</div>
+      <div class="chart-subtitle">Aprobadas vs Pendientes vs Rechazadas</div>
+      <div class="chart-wrap"><canvas id="chartStatus"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title">Tendencia mensual de solicitudes</div>
+      <div class="chart-subtitle">Evolución Ene – May 2026</div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chartTrend"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <div class="chart-title">Tiempo promedio de resolución</div>
+      <div class="chart-subtitle">Días promedio por departamento</div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chartTime"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SECCIÓN NUEVA: GENERACIÓN DE REPORTES POR TIPO Y FECHA
+       ====================================================== -->
+  <div class="gen-reporte-card">
+    <div class="gen-reporte-header">
+      <div>
+        <h3>&#128196; Generar Reporte Personalizado</h3>
+        <p>Filtra por tipo, departamento y rango de fechas para obtener un reporte a medida.</p>
+      </div>
+    </div>
+    <div class="gen-reporte-form">
+      <div class="gen-campo">
+        <label>Tipo de reporte</label>
+        <select class="ctrl" id="genTipo">
+          <option value="solicitudes">Solicitudes por período</option>
+          <option value="certificados">Certificados emitidos</option>
+          <option value="usuarios">Usuarios activos</option>
+        </select>
+      </div>
+      <div class="gen-campo">
+        <label>Departamento</label>
+        <select class="ctrl" id="genDept">
+          <option value="all">Todos</option>
+          <option value="RRHH">Recursos Humanos</option>
+          <option value="TI">Tecnología</option>
+          <option value="Finanzas">Finanzas</option>
+          <option value="Operaciones">Operaciones</option>
+          <option value="Legal">Legal</option>
+        </select>
+      </div>
+      <div class="gen-campo">
+        <label>Fecha inicio</label>
+        <input type="date" class="ctrl" id="genInicio" />
+      </div>
+      <div class="gen-campo">
+        <label>Fecha fin</label>
+        <input type="date" class="ctrl" id="genFin" />
+      </div>
+      <div class="gen-campo gen-btn-wrap">
+        <button class="btn btn-blue" onclick="ejecutarReporte()">&#128202; Generar</button>
+        <button class="btn btn-outline" onclick="exportarResultado()">&#8659; Excel</button>
+      </div>
+    </div>
+    <!-- Resultado del reporte generado -->
+    <div id="resultado-reporte" style="margin-top:1.25rem;"></div>
+  </div>
+
+  <!-- HISTORIAL REPORTES -->
+  <div class="table-card">
+    <div class="table-header">
+      <h3>&#128196; Historial de reportes generados</h3>
+      <button class="btn btn-blue" onclick="addReport()">&#43; Nuevo</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tipo de reporte</th>
+          <th>Departamento</th>
+          <th>Fecha</th>
+          <th>Generado por</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="reportTable"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<script src="js/reportes.js"></script>
+</body>
+</html>

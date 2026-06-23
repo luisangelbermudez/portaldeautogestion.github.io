@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Portal Empleado — Acegrasco</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="css/usuario.css"/>
+
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar-top">
+    <a href="index.html" class="brand">🏢 Portal Acegrasco</a>
+    <div class="nav-links">
+      <a href="admin.html" id="btnAdmin" style="display:none;">📊 Administrador</a>
+      <a href="index.html" id="btnCerrar">🚪 Cerrar sesión</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- 1. PERFIL DEL EMPLEADO (se llena desde la sesión) -->
+    <div class="perfil-card">
+      <img src="imagenes/avatar.JPG" alt="Avatar" class="perfil-avatar"/>
+      <div class="perfil-info">
+        <h4 id="nombreEmpleado">Empleado</h4>
+        <p id="cargoEmpleado">📌 Cargo: —</p>
+        <p id="cedulaEmpleado">🪪 Cédula: —</p>
+        <p id="correoEmpleado">✉ Correo: —</p>
+        <p id="tiempoEmpleado">🕐 Tiempo en la compañía: —</p>
+        <span class="perfil-badge">✅ Sesión activa</span>
+      </div>
+    </div>
+
+    <!-- 2. ESTADÍSTICAS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="contadorSolicitudes">0</div>
+        <div class="stat-lbl">Total solicitudes</div>
+      </div>
+      <div class="stat-card verde">
+        <div class="stat-num" id="contadorAprobadas">0</div>
+        <div class="stat-lbl">Atendidas</div>
+      </div>
+      <div class="stat-card rojo">
+        <div class="stat-num" id="contadorPendientes">0</div>
+        <div class="stat-lbl">Pendientes</div>
+      </div>
+    </div>
+
+    <!-- 3. CERTIFICADOS LABORALES -->
+    <div class="panel">
+      <div class="panel-titulo">📄 Carta Laboral</div>
+
+      <label class="form-lbl">Tipo de carta</label>
+      <select id="tipoCarta" class="form-select-cert" onchange="mostrarDescCert()">
+        <option value="">— Seleccionar tipo de certificado —</option>
+        <option value="todos">Certificación laboral — con todos los datos</option>
+        <option value="sin_basico">Certificación laboral — sin salario básico</option>
+        <option value="con_extras">Carta laboral con promedio de horas extras</option>
+      </select>
+
+      <div class="cert-desc" id="certDesc"></div>
+
+      <button class="btn-principal" onclick="generarCertificado()">
+        📄 Generar y descargar certificado
+      </button>
+
+      <div id="resultadoCertificado"></div>
+    </div>
+
+    <!-- 4. NUEVA SOLICITUD -->
+    <div class="panel">
+      <div class="panel-titulo rojo">📨 Enviar nueva solicitud</div>
+
+      <form id="formSolicitud" onsubmit="guardarSolicitud(event)">
+        <label class="form-lbl">Nombre completo</label>
+        <input type="text"  id="nombre"  class="form-ctrl" placeholder="Tu nombre completo..." required/>
+
+        <label class="form-lbl">Correo electrónico</label>
+        <input type="email" id="email"   class="form-ctrl" placeholder="correo@empresa.com" required/>
+
+        <label class="form-lbl">Descripción de la solicitud</label>
+        <textarea           id="mensaje" class="form-ctrl" rows="4" placeholder="Describe tu solicitud aquí..." required></textarea>
+
+        <button type="submit" class="btn-enviar">📨 Enviar solicitud</button>
+      </form>
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <div id="toast-ok">✅ Solicitud enviada correctamente</div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Portal de Autogestión © 2026
+    <span>📱 (+57) 301 2952356</span>
+    <span>✉ info@acegrasco.com.co</span>
+    <span>📍 Calle 15 #5-23, Bogotá</span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/usuario.js"></script> 
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+EVIDENCIA GA7-220501096-AA2-EV02
+Módulos de software codificados y probados
+Portal de Autogestión - Acegrasco S.A.
+
+=============================================
+ENLACE AL REPOSITORIO EN GITHUB
+=============================================
+
+https://github.com/luisangelbermudez/portaldeautogestion.github.io
+
+=============================================
+DESCRIPCIÓN DEL MÓDULO WEB
+=============================================
+
+Módulo Java Web con Servlets y JSP conectado a MySQL
+mediante JDBC. Implementa CRUD completo para usuarios,
+empleados y solicitudes del Portal de Autogestión.
+
+=============================================
+ESTRUCTURA DEL PROYECTO
+=============================================
+
+src/main/java/co/acegrasco/
+  conexion/
+    Conexion.java              ← Singleton JDBC
+  modelo/
+    Usuario.java               ← Entidad usuario
+    Empleado.java              ← Entidad empleado (con campo area)
+    Solicitud.java             ← Entidad solicitud
+  dao/
+    UsuarioDao.java            ← CRUD usuarios con PreparedStatement
+    EmpleadoDao.java           ← CRUD empleados con PreparedStatement
+    SolicitudDao.java          ← CRUD solicitudes con PreparedStatement
+  servlet/
+    LoginServlet.java          ← GET muestra form / POST autentica
+    LogoutServlet.java         ← GET invalida sesión
+    DashboardServlet.java      ← GET dashboard admin/empleado
+    UsuarioServlet.java        ← GET lista/form / POST insertar/actualizar
+    EmpleadoServlet.java       ← GET lista/form / POST insertar/actualizar
+    SolicitudServlet.java      ← GET lista/form / POST insertar
+
+src/main/webapp/
+  index.jsp                    ← Formulario de login (JSP)
+  css/estilos.css              ← Hoja de estilos
+  WEB-INF/
+    web.xml                    ← Descriptor de despliegue
+    views/
+      header.jsp               ← Fragmento cabecera reutilizable
+      footer.jsp               ← Fragmento pie reutilizable
+      dashboard-admin.jsp      ← Dashboard administrador (JSP + JSTL)
+      dashboard-empleado.jsp   ← Dashboard empleado (JSP + JSTL)
+      usuarios.jsp             ← Lista usuarios (JSP + JSTL)
+      usuario-form.jsp         ← Formulario crear/editar usuario
+      empleados.jsp            ← Lista empleados (JSP + JSTL)
+      empleado-form.jsp        ← Formulario crear/editar empleado
+      solicitudes.jsp          ← Lista solicitudes (JSP + JSTL)
+      solicitud-form.jsp       ← Formulario nueva solicitud
+      error.jsp                ← Página de error 404
+
+=============================================
+REQUISITOS CUMPLIDOS DE LA EVIDENCIA
+=============================================
+
+✅ Formularios HTML conectados a Servlets
+✅ Método GET  → mostrar formularios y listar datos
+✅ Método POST → insertar y actualizar registros
+✅ Elementos JSP: scriptlets, EL, JSTL (c:forEach, c:choose, c:if)
+✅ Fragmentos JSP reutilizables (header.jsp / footer.jsp)
+✅ Conexión a BD mediante JDBC con PreparedStatement
+✅ CRUD: Inserción, Consulta, Actualización, Eliminación
+✅ Manejo de sesiones (HttpSession) con control de acceso por rol
+✅ Proyecto Maven con versionamiento en GitHub
+
+=============================================
+INSTRUCCIONES DE DESPLIEGUE
+=============================================
+
+Requisitos:
+  - Java 17 | Maven 3.8+ | XAMPP (MySQL) | Tomcat 10+
+
+Pasos:
+  1. Importar portal_acegrasco.sql en phpMyAdmin
+  2. Abrir proyecto en IntelliJ IDEA
+  3. Ejecutar: mvn tomcat7:run
+     O desplegar en Tomcat: mvn package → copiar .war a webapps/
+  4. Abrir: http://localhost:8080/acegrasco/login
+
+Credenciales de prueba:
+  Admin   : jltrivino@acegrasco.com  / 123456
+  Empleado: jcsanchez@acegrasco.com / 123456

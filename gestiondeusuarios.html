@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Usuarios - Acegrasco</title>
+  <link rel="stylesheet" href="css/gestiondeusuarios.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+ 
+<nav>
+  <a class="nav-brand" href="admin.html">Portal <span>Acegrasco</span> &rsaquo; Gestión de Usuarios</a>
+  <a href="admin.html">📊 Administrador</a>
+  <a href="index.html">🚪 Salir</a>
+</nav>
+ 
+<div class="layout">
+ 
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Usuarios</div>
+    <a class="side-link active" href="#">👤 Usuarios</a>
+    <a class="side-link" href="#">👥 Grupos</a>
+    <a class="side-link" href="#">🔑 Niveles de acceso</a>
+    <div class="side-divider"></div>
+    <div class="sidebar-title">Reportes</div>
+    <a class="side-link" href="reportes.html">📊 Ver reportes</a>
+  </aside>
+ 
+  <!-- CONTENIDO -->
+  <main class="main">
+ 
+    <div class="page-header">
+      <div>
+        <h1>Gestión de Usuarios</h1>
+        <p>Administra los empleados y sus datos en el sistema Acegrasco</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-excel"   onclick="document.getElementById('xlsxInput').click()">📥 Importar Excel</button>
+        <button class="btn btn-outline" onclick="exportExcel()">⬇ Exportar Excel</button>
+        <button class="btn btn-green"   onclick="openModal('new')">+ Nuevo usuario</button>
+      </div>
+    </div>
+ 
+    <!-- ZONA CARGA EXCEL -->
+    <div class="upload-section" id="dropZone">
+      <h3>📂 Importar base de datos de empleados</h3>
+      <p>Arrastra un archivo Excel (.xlsx / .xls) aquí, o haz clic para seleccionar</p>
+      <div class="upload-row">
+        <button class="btn btn-excel"   onclick="document.getElementById('xlsxInput').click()">Seleccionar archivo</button>
+        <button class="btn btn-outline" onclick="downloadTemplate()">Descargar plantilla</button>
+      </div>
+      <input type="file" id="xlsxInput" accept=".xlsx,.xls" onchange="handleFile(event)"/>
+      <div class="template-note">
+        Columnas requeridas: Nombre · Usuario · Correo · Cédula · Cargo · Área · Fecha Ingreso · Salario · Promedio Extras · Grupo · Estado
+      </div>
+    </div>
+ 
+    <!-- TOOLBAR FILTROS -->
+    <div class="toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, usuario, cédula o correo..." oninput="renderTable()"/>
+      </div>
+      <select class="filter-sel" id="statusFilter" onchange="renderTable()">
+        <option value="">Todos los estados</option>
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+        <option value="Bloqueado">Bloqueado</option>
+      </select>
+      <select class="filter-sel" id="groupFilter" onchange="renderTable()">
+        <option value="">Todos los grupos</option>
+        <option value="Super Users">Super Users</option>
+        <option value="Usuarios">Usuarios</option>
+        <option value="Operadores">Operadores</option>
+      </select>
+      <span id="countBadge" style="font-size:.8rem;color:var(--text-muted);white-space:nowrap;"></span>
+    </div>
+ 
+    <!-- TABLA -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortBy('id')">#ID</th>
+            <th onclick="sortBy('nombre')">Nombre ↕</th>
+            <th onclick="sortBy('cedula')">Cédula ↕</th>
+            <th onclick="sortBy('cargo')">Cargo ↕</th>
+            <th onclick="sortBy('fechaIngreso')">Fecha Ingreso ↕</th>
+            <th onclick="sortBy('area')">Área ↕</th>
+            <th onclick="sortBy('grupo')">Grupo ↕</th>
+            <th>Correo</th>
+            <th onclick="sortBy('estado')">Estado ↕</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <div class="icon">👥</div>
+        <p>No se encontraron usuarios con los filtros actuales.</p>
+      </div>
+    </div>
+ 
+  </main>
+</div><!-- /layout -->
+ 
+ 
+<!-- MODAL CREAR / EDITAR USUARIO -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Nuevo Usuario</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId"/>
+ 
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" id="fNombre" placeholder="Nombre completo"/>
+        </div>
+        <div class="form-group">
+          <label>Usuario *</label>
+          <input type="text" id="fUsuario" placeholder="nombre.apellido"/>
+        </div>
+      </div>
+ 
+      <div class="form-group">
+        <label>Correo electrónico *</label>
+        <input type="email" id="fCorreo" placeholder="correo@acegrasco.com"/>
+      </div>
+ 
+      <!-- NUEVOS CAMPOS -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cédula de ciudadanía</label>
+          <input type="text" id="fCedula" placeholder="1234567890"/>
+        </div>
+        <div class="form-group">
+          <label>Fecha de ingreso</label>
+          <input type="date" id="fFechaIngreso"/>
+        </div>
+      </div>
+ 
+      <div class="form-group">
+        <label>Cargo</label>
+        <input type="text" id="fCargo" placeholder="Ej: Analista de Sistemas"/>
+      </div>
+
+      <div class="form-group">
+        <label>Área / Departamento</label>
+        <input type="text" id="fArea" placeholder="Ej: Tecnología, Contabilidad, RRHH"/>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Salario básico mensual ($)</label>
+          <input type="number" id="fSalario" placeholder="Ej: 2500000" min="0"/>
+        </div>
+        <div class="form-group">
+          <label>Promedio extras mensual ($)</label>
+          <input type="number" id="fPromedioExtras" placeholder="Ej: 150000" min="0"/>
+        </div>
+      </div>
+      <!-- FIN NUEVOS CAMPOS -->
+ 
+      <div class="form-row">
+        <div class="form-group">
+          <label>Grupo</label>
+          <select id="fGrupo">
+            <option>Super Users</option>
+            <option>Usuarios</option>
+            <option>Operadores</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="fEstado">
+            <option>Activo</option>
+            <option>Inactivo</option>
+            <option>Bloqueado</option>
+          </select>
+        </div>
+      </div>
+ 
+      <div class="form-group">
+        <label>Contraseña <span style="font-size:.72rem;color:var(--text-muted);">(dejar vacío para no cambiar)</span></label>
+        <input type="password" id="fPassword" placeholder="••••••••"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-green"   onclick="saveUser()">💾 Guardar usuario</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal-bg" id="confirmBg">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-header" style="background:var(--danger);">
+      <h3>Confirmar eliminación</h3>
+      <button class="modal-close" onclick="document.getElementById('confirmBg').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.9rem;">
+        ¿Estás seguro de que deseas eliminar al usuario <strong id="deleteUserName"></strong>?
+        Esta acción no se puede deshacer.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('confirmBg').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-danger"  onclick="confirmDelete()">🗑 Eliminar</button>
+    </div>
+  </div>
+</div>
+ 
+<div class="toast" id="toast"></div>
+</body>
+<script src="js/gestiondeusuarios.js"></script>
+</html>

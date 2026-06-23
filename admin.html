@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Panel Administrador — Acegrasco</title>
+  <link rel="stylesheet" href="css/admin.css"/>
+  <script src="js/admin_guard.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+  </head>
+<body>
+ 
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+ 
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="sidebar-logo">
+        <img src="imagenes/acegrasco.JPG" alt="Acegrasco"/>
+        <span>Acegrasco S.A. <small>Portal Autogestión</small></span>
+      </a>
+    </div>
+ 
+    <div class="sidebar-admin">
+      <div class="admin-avatar">AD</div>
+      <div class="admin-info">
+        <span>Administrador</span>
+        <small>Acceso total</small>
+      </div>
+    </div>
+ 
+    <nav class="sidebar-nav">
+      <div class="nav-section-lbl">Principal</div>
+      <a href="usuario.html" class="sidebar-link activo">
+        <span class="icon">🏠</span> Inicio
+      </a>
+ 
+      <div class="nav-section-lbl" style="margin-top:10px;">Gestión</div>
+      <a href="gestiondeusuarios.html" class="sidebar-link">
+        <span class="icon">👥</span> Gestión de Usuarios
+      </a>
+      <a href="gestiondesolicitudes.html" class="sidebar-link">
+        <span class="icon">📄</span> Gestión de Solicitudes
+      </a>
+      <a href="reportes.html" class="sidebar-link">
+        <span class="icon">📊</span> Reportes
+      </a>
+    </nav>
+ 
+    <div class="sidebar-footer">
+      <a href="index.html" class="sidebar-link" style="color:rgba(231,76,60,.85);">
+        <span class="icon">🚪</span> Cerrar sesión
+      </a>
+    </div>
+  </aside>
+ 
+  <!-- ===== CONTENIDO ===== -->
+  <main class="main-content">
+ 
+    <h1 class="page-title">Panel de Administración</h1>
+    <p class="page-subtitle">Bienvenido al sistema de gestión del portal — Acegrasco S.A.</p>
+ 
+    <!-- ESTADÍSTICAS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div>
+          <div class="stat-num" id="contadorSolicitudes">0</div>
+          <div class="stat-lbl">Solicitudes hoy</div>
+        </div>
+      </div>
+      <div class="stat-card verde">
+        <div class="stat-icon">✅</div>
+        <div>
+          <div class="stat-num" id="contadorAprobadas">0</div>
+          <div class="stat-lbl">Aprobadas</div>
+        </div>
+      </div>
+      <div class="stat-card rojo">
+        <div class="stat-icon">⏳</div>
+        <div>
+          <div class="stat-num" id="contadorPendientes">0</div>
+          <div class="stat-lbl">Pendientes</div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ACCESOS RÁPIDOS -->
+    <div class="accesos-grid">
+      <div class="acceso-card">
+        <div class="ac-icon">👥</div>
+        <h6>Gestión de Usuarios</h6>
+        <p>Administrar usuarios del sistema, roles y permisos.</p>
+        <a href="gestiondeusuarios.html" class="btn-acceso">Gestionar</a>
+      </div>
+      <div class="acceso-card">
+        <div class="ac-icon">📄</div>
+        <h6>Gestión de Solicitudes</h6>
+        <p>Consultar, atender y revisar solicitudes de empleados.</p>
+        <a href="gestiondesolicitudes.html" class="btn-acceso">Gestionar</a>
+      </div>
+      <div class="acceso-card">
+        <div class="ac-icon">📊</div>
+        <h6>Reportes</h6>
+        <p>Generar reportes y estadísticas del sistema.</p>
+        <a href="reportes.html" class="btn-acceso">Generar</a>
+      </div>
+    </div>
+ 
+    <!-- ACTIVIDAD RECIENTE -->
+    <div class="panel">
+      <div class="panel-titulo">📋 Actividad reciente</div>
+      <div id="actividadReciente">
+        <div class="actividad-item">
+          <div class="act-dot verde"></div>
+          <div class="act-texto">Sistema iniciado correctamente.</div>
+          <div class="act-fecha">Hoy</div>
+        </div>
+        <div class="actividad-item">
+          <div class="act-dot"></div>
+          <div class="act-texto">No hay solicitudes recientes aún.</div>
+          <div class="act-fecha">—</div>
+        </div>
+      </div>
+    </div>
+ 
+  </main>   
+ 
+</body>
+  <script src="admin.js"></script>
+</html>
