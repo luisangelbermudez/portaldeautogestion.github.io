@@ -1,0 +1,82 @@
+EVIDENCIA GA7-220501096-AA3-EV01
+Codificación de módulos del software (Framework React)
+Portal de Autogestión - Acegrasco S.A.
+
+=============================================
+ENLACE AL REPOSITORIO EN GITHUB
+=============================================
+
+https://github.com/luisangelbermudez/portaldeautogestion.github.io
+
+=============================================
+DESCRIPCIÓN DEL MÓDULO
+=============================================
+
+Frontend React que consume la API REST del backend Java (Servlets + JDBC).
+Implementa CRUD completo para los 3 módulos del sistema.
+
+Framework utilizado : React 18
+Librería HTTP       : Axios
+Enrutamiento        : React Router DOM v6
+Backend consumido   : Java Servlets (Tomcat 10) en puerto 8080
+Base de datos       : MySQL (XAMPP)
+
+=============================================
+ESTRUCTURA DEL PROYECTO REACT
+=============================================
+
+acegrasco-react/
+├── package.json               ← Dependencias del proyecto
+├── public/
+│   └── index.html             ← HTML base
+└── src/
+    ├── index.js               ← Punto de entrada React
+    ├── index.css              ← Estilos globales corporativos
+    ├── App.js                 ← Enrutador principal (React Router)
+    ├── services/
+    │   └── api.js             ← Servicio HTTP centralizado (Axios)
+    └── pages/
+        ├── Dashboard.js       ← Estadísticas generales
+        ├── Usuarios.js        ← CRUD usuarios (GET/POST/PUT/DELETE)
+        ├── Empleados.js       ← CRUD empleados (GET/POST/PUT/DELETE)
+        └── Solicitudes.js     ← CRUD solicitudes + cambio de estado
+
+=============================================
+NUEVOS SERVLETS REST (agregar al proyecto Java)
+=============================================
+
+src/main/java/co/acegrasco/servlet/api/
+  ApiUsuariosServlet.java    ← REST /api/usuarios
+  ApiEmpleadosServlet.java   ← REST /api/empleados
+  ApiSolicitudesServlet.java ← REST /api/solicitudes
+
+=============================================
+INSTRUCCIONES DE EJECUCIÓN
+=============================================
+
+1. Asegurarse de que XAMPP esté corriendo (MySQL)
+2. Asegurarse de que Tomcat esté corriendo con el proyecto Java
+   → http://localhost:8080/acegrasco/login debe funcionar
+
+3. Agregar los 3 Servlets API al proyecto Java (carpeta api/)
+   y reiniciar Tomcat (Build → Rebuild Project → Run)
+
+4. Abrir terminal en la carpeta acegrasco-react/ y ejecutar:
+   npm install
+   npm start
+
+5. React abrirá automáticamente en:
+   → http://localhost:3000
+
+=============================================
+ESTÁNDARES DE CODIFICACIÓN APLICADOS
+=============================================
+
+- Componentes en PascalCase  : Usuarios, Empleados, Solicitudes
+- Funciones en camelCase     : cargarUsuarios, guardarEmpleado
+- Constantes en UPPER_CASE   : AREAS, TIPOS, ESTADOS
+- Comentarios en cada archivo explicando su propósito
+- Separación de responsabilidades: servicios/api.js maneja HTTP,
+  los componentes manejan solo la UI
+- Manejo de errores con try/catch en todas las peticiones asíncronas
+- Uso de React Hooks: useState, useEffect
