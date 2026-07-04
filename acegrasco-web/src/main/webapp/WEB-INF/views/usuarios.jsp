@@ -41,6 +41,11 @@
             <td>
               <a href="${pageContext.request.contextPath}/admin/usuarios?accion=editar&id=${u.idUsuario}"
                  class="btn btn-secundario btn-sm">&#9998; Editar</a>
+              <c:if test="${u.idEstado == 1}">
+                <a href="${pageContext.request.contextPath}/admin/usuarios?accion=desactivar&id=${u.idUsuario}"
+                   class="btn btn-advertencia btn-sm"
+                   onclick="return confirm('¿Desactivar a ${u.nombre}? No podrá iniciar sesión, pero su historial se conserva.')">&#128683; Desactivar</a>
+              </c:if>
               <a href="${pageContext.request.contextPath}/admin/usuarios?accion=eliminar&id=${u.idUsuario}"
                  class="btn btn-peligro btn-sm"
                  onclick="return confirm('¿Eliminar usuario ${u.nombre}?')">&#128465; Eliminar</a>

@@ -62,15 +62,35 @@ public class UsuarioServlet extends HttpServlet {
                 listarUsuarios(request, response);
                 return;
             }
-            request.setAttribute("usuario", usuario);
+            request.setAttribute("usuarioEditar", usuario);
             request.getRequestDispatcher("/WEB-INF/views/usuario-form.jsp").forward(request, response);
 
         } else if ("eliminar".equals(accion)) {
             // Eliminar usuario por ID
             int id = Integer.parseInt(request.getParameter("id"));
+
+            if (usuarioDao.tieneEmpleadoAsociado(id)) {
+                // No se puede borrar: hay un empleado (y su historial de certificados/solicitudes)
+                // que depende de este usuario. Sugerimos desactivar en su lugar.
+                request.setAttribute("error",
+                    "Este usuario tiene un empleado asociado y no puede eliminarse, " +
+                    "ya que perdería su historial de certificados y solicitudes. " +
+                    "Usa el botón \"Desactivar\" para bloquear su acceso sin borrar sus datos.");
+                listarUsuarios(request, response);
+                return;
+            }
+
             boolean ok = usuarioDao.eliminar(id);
             request.setAttribute(ok ? "mensaje" : "error",
                 ok ? "Usuario eliminado correctamente." : "No se pudo eliminar el usuario.");
+            listarUsuarios(request, response);
+
+        } else if ("desactivar".equals(accion)) {
+            // Desactiva el usuario (id_estado = Inactivo) en vez de borrarlo físicamente
+            int id = Integer.parseInt(request.getParameter("id"));
+            boolean ok = usuarioDao.desactivar(id);
+            request.setAttribute(ok ? "mensaje" : "error",
+                ok ? "Usuario desactivado correctamente." : "No se pudo desactivar el usuario.");
             listarUsuarios(request, response);
 
         } else {

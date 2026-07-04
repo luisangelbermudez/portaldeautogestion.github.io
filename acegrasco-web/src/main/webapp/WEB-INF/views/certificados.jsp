@@ -103,7 +103,8 @@
     </p>
 
     <%-- Formulario POST al CertificadoServlet --%>
-    <form action="${pageContext.request.contextPath}/certificados" method="post" id="formCert">
+    <%-- target="frameDescargaCert": evita que la descarga del PDF navegue fuera de esta página --%>
+    <form action="${pageContext.request.contextPath}/certificados" method="post" id="formCert" target="frameDescargaCert">
 
       <!-- Selección tipo de certificado -->
       <div class="row g-3 mb-3">
@@ -155,6 +156,9 @@
       </div>
 
     </form>
+
+    <!-- Iframe oculto: recibe la descarga del PDF sin sacar al usuario de esta página -->
+    <iframe name="frameDescargaCert" id="frameDescargaCert" style="display:none;"></iframe>
   </div>
 
   <!-- HISTORIAL DE CERTIFICADOS -->
@@ -232,7 +236,20 @@
     if (!document.getElementById('tipoCarta').value) {
       e.preventDefault();
       alert('⚠️ Por favor selecciona un tipo de certificado.');
+      return;
     }
+
+    // Si el canal es PDF, la respuesta del servlet se descarga en el iframe oculto
+    // (gracias a target="frameDescargaCert") y esta página NO navega.
+    // Por eso recargamos manualmente para que "Mis certificados generados" se actualice.
+    var canalSeleccionado = document.getElementById('canal').value;
+    if (canalSeleccionado === 'pdf') {
+      setTimeout(function () {
+        window.location.reload();
+      }, 800); // pequeña espera para que el navegador alcance a iniciar la descarga
+    }
+    // Si el canal es "correo", el servlet hace forward directo a esta misma JSP
+    // con los datos actualizados, así que no hace falta recargar aparte.
   });
 </script>
 

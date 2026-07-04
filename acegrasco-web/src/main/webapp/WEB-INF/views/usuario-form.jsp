@@ -6,7 +6,7 @@
   <div class="tarjeta-encabezado">
     <span class="tarjeta-titulo">
       <c:choose>
-        <c:when test="${not empty usuario}">&#9998; Editar Usuario</c:when>
+        <c:when test="${not empty usuarioEditar}">&#9998; Editar Usuario</c:when>
         <c:otherwise>&#43; Nuevo Usuario</c:otherwise>
       </c:choose>
     </span>
@@ -25,21 +25,21 @@
   <form action="${pageContext.request.contextPath}/admin/usuarios" method="post">
 
     <!-- Campo oculto: solo se envía en edición -->
-    <c:if test="${not empty usuario}">
-      <input type="hidden" name="idUsuario" value="${usuario.idUsuario}"/>
+    <c:if test="${not empty usuarioEditar}">
+      <input type="hidden" name="idUsuario" value="${usuarioEditar.idUsuario}"/>
     </c:if>
 
     <div class="form-fila">
       <div class="form-grupo">
         <label for="nombre">Nombre completo *</label>
         <input type="text" id="nombre" name="nombre" class="form-control"
-               value="${not empty usuario ? usuario.nombre : ''}" required
+               value="${not empty usuarioEditar ? usuarioEditar.nombre : ''}" required
                placeholder="Ej: Carlos Rodríguez"/>
       </div>
       <div class="form-grupo">
         <label for="correo">Correo electrónico *</label>
         <input type="email" id="correo" name="correo" class="form-control"
-               value="${not empty usuario ? usuario.correo : ''}" required
+               value="${not empty usuarioEditar ? usuarioEditar.correo : ''}" required
                placeholder="usuario@acegrasco.com"/>
       </div>
     </div>
@@ -47,12 +47,12 @@
     <div class="form-fila">
       <div class="form-grupo">
         <label for="contrasena">
-          Contraseña <c:if test="${not empty usuario}">(dejar vacío para no cambiar)</c:if>
-          <c:if test="${empty usuario}">*</c:if>
+          Contraseña <c:if test="${not empty usuarioEditar}">(dejar vacío para no cambiar)</c:if>
+          <c:if test="${empty usuarioEditar}">*</c:if>
         </label>
         <input type="password" id="contrasena" name="contrasena" class="form-control"
                placeholder="••••••••"
-               <c:if test="${empty usuario}">required</c:if>/>
+               <c:if test="${empty usuarioEditar}">required</c:if>/>
       </div>
     </div>
 
@@ -60,15 +60,15 @@
       <div class="form-grupo">
         <label for="idRol">Rol *</label>
         <select id="idRol" name="idRol" class="form-control" required>
-          <option value="2" ${(not empty usuario && usuario.idRol == 2) ? 'selected' : ''}>Empleado</option>
-          <option value="1" ${(not empty usuario && usuario.idRol == 1) ? 'selected' : ''}>Administrador</option>
+          <option value="2" ${(not empty usuarioEditar && usuarioEditar.idRol == 2) ? 'selected' : ''}>Empleado</option>
+          <option value="1" ${(not empty usuarioEditar && usuarioEditar.idRol == 1) ? 'selected' : ''}>Administrador</option>
         </select>
       </div>
       <div class="form-grupo">
         <label for="idEstado">Estado *</label>
         <select id="idEstado" name="idEstado" class="form-control" required>
-          <option value="1" ${(empty usuario || usuario.idEstado == 1) ? 'selected' : ''}>Activo</option>
-          <option value="2" ${(not empty usuario && usuario.idEstado == 2) ? 'selected' : ''}>Inactivo</option>
+          <option value="1" ${(empty usuarioEditar || usuarioEditar.idEstado == 1) ? 'selected' : ''}>Activo</option>
+          <option value="2" ${(not empty usuarioEditar && usuarioEditar.idEstado == 2) ? 'selected' : ''}>Inactivo</option>
         </select>
       </div>
     </div>

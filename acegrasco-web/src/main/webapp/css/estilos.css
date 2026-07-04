@@ -67,6 +67,7 @@ body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--fondo);color:var(
 .btn-primario{background:var(--secundario);color:#fff;}.btn-primario:hover{background:var(--primario);}
 .btn-exito{background:var(--exito);color:#fff;}.btn-exito:hover{background:#218838;}
 .btn-peligro{background:var(--peligro);color:#fff;}.btn-peligro:hover{background:#c82333;}
+.btn-advertencia{background:#f1c40f;color:#0f3460;}.btn-advertencia:hover{background:#d4ac0d;}
 .btn-secundario{background:var(--fondo);color:var(--texto);border:1px solid var(--borde);}.btn-secundario:hover{background:var(--borde);}
 .btn-sm{padding:5px 10px;font-size:12px;}
 

@@ -108,6 +108,36 @@ public class UsuarioDao {
         }
     }
 
+    /**
+     * Verifica si el usuario tiene un registro de empleado asociado.
+     * Se usa antes de eliminar, ya que la FK fk_empleado_usuario impide
+     * borrar un usuario mientras exista un empleado que lo referencia.
+     */
+    public boolean tieneEmpleadoAsociado(int idUsuario) {
+        String sql = "SELECT 1 FROM empleados WHERE id_usuario=? LIMIT 1";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            System.err.println("Error verificar empleado asociado: " + e.getMessage());
+            return true; // ante la duda, prevenimos el borrado por seguridad
+        }
+    }
+
+    /** Desactiva un usuario (id_estado = 2 -> 'Inactivo') en vez de borrarlo físicamente. */
+    public boolean desactivar(int idUsuario) {
+        String sql = "UPDATE usuarios SET id_estado = 2 WHERE id_usuario=?";
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error desactivar usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
     private Usuario mapear(ResultSet rs) throws SQLException {
         return new Usuario(
             rs.getInt("id_usuario"), rs.getString("nombre"), rs.getString("correo"),
