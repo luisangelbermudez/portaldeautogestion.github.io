@@ -103,15 +103,15 @@ INSERT INTO tipo_certificados (nombre_tipo, descripcion) VALUES
 -- Tabla: certificados
 -- ----------------------------------------------------------------
 CREATE TABLE certificados (
-id_certificado   INT(11)      NOT NULL,
+id_certificado   INT(11)      NOT NULL AUTO_INCREMENT,
 id_empleado      INT(11)      NOT NULL,
 id_tipo          INT(11)      NOT NULL,
-consecutivo      INT(11)      NOT NULL AUTO_INCREMENT,
+consecutivo      INT(11)      NOT NULL,
 incluye_sueldo   TINYINT(1)   NOT NULL DEFAULT 0,
 fecha_generacion TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
 canal_entrega    VARCHAR(20)  NOT NULL DEFAULT 'pdf' COMMENT 'pdf | correo',
 archivo_pdf      VARCHAR(255),
-PRIMARY KEY (consecutivo),
+PRIMARY KEY (id_certificado),
 CONSTRAINT fk_cert_empleado FOREIGN KEY (id_empleado) REFERENCES empleados        (id_empleado),
 CONSTRAINT fk_cert_tipo     FOREIGN KEY (id_tipo)     REFERENCES tipo_certificados (id_tipo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
