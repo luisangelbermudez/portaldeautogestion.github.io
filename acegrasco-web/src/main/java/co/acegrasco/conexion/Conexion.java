@@ -14,7 +14,7 @@ public class Conexion {
     private static final String URL     = "jdbc:mysql://127.0.0.1:3306/portal_acegrasco"
                                         + "?useSSL=false&serverTimezone=America/Bogota&allowPublicKeyRetrieval=true";
     private static final String USUARIO = "root";
-    private static final String CLAVE   = "123456";   // XAMPP por defecto sin contraseña
+    private static final String CLAVE   = "";   // XAMPP por defecto sin contraseña
 
     private static Conexion instancia;
     private Connection conexionActiva;
