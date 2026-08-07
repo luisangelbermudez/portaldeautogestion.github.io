@@ -1,0 +1,256 @@
+{
+  "info": {
+    "name": "Portal de Autogestión de Empleados - Acegrasco S.A.",
+    "description": "Colección de pruebas para la API REST del Portal de Autogestión de Empleados (Evidencia GA7-220501096-AA5-EV04). Incluye los servicios de Usuarios, Empleados, Solicitudes y Certificados.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080/portal-autogestion-web", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "GET - Listar todos los usuarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/usuarios", "host": ["{{base_url}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "GET - Consultar usuario por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios?id=1",
+              "host": ["{{base_url}}"], "path": ["api", "usuarios"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "POST - Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario de Prueba\",\n  \"correo\": \"prueba.postman@acegrasco.com\",\n  \"contrasena\": \"123456\",\n  \"idRol\": 2,\n  \"idEstado\": 1\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/usuarios", "host": ["{{base_url}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 1,\n  \"nombre\": \"Usuario Actualizado\",\n  \"correo\": \"actualizado@acegrasco.com\",\n  \"idRol\": 1,\n  \"idEstado\": 1\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/usuarios", "host": ["{{base_url}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar usuario",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/usuarios?id=99",
+              "host": ["{{base_url}}"], "path": ["api", "usuarios"],
+              "query": [{ "key": "id", "value": "99" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Empleados",
+      "item": [
+        {
+          "name": "GET - Listar todos los empleados",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/empleados", "host": ["{{base_url}}"], "path": ["api", "empleados"] }
+          }
+        },
+        {
+          "name": "GET - Consultar empleado por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados?id=1",
+              "host": ["{{base_url}}"], "path": ["api", "empleados"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "POST - Registrar empleado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 3,\n  \"cedula\": \"1122334455\",\n  \"cargo\": \"Analista\",\n  \"area\": \"Sistemas\",\n  \"fechaIngreso\": \"2024-01-15\",\n  \"salario\": 2200000,\n  \"promedioHorasExtras\": 5\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/empleados", "host": ["{{base_url}}"], "path": ["api", "empleados"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar empleado",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idEmpleado\": 1,\n  \"cedula\": \"1122334455\",\n  \"cargo\": \"Analista Senior\",\n  \"area\": \"Sistemas\",\n  \"fechaIngreso\": \"2024-01-15\",\n  \"salario\": 2500000,\n  \"promedioHorasExtras\": 6\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/empleados", "host": ["{{base_url}}"], "path": ["api", "empleados"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar empleado",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/empleados?id=99",
+              "host": ["{{base_url}}"], "path": ["api", "empleados"],
+              "query": [{ "key": "id", "value": "99" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Solicitudes",
+      "item": [
+        {
+          "name": "GET - Listar todas las solicitudes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/solicitudes", "host": ["{{base_url}}"], "path": ["api", "solicitudes"] }
+          }
+        },
+        {
+          "name": "GET - Consultar solicitud por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/solicitudes?id=1",
+              "host": ["{{base_url}}"], "path": ["api", "solicitudes"],
+              "query": [{ "key": "id", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "GET - Listar solicitudes por empleado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/solicitudes?empleado=1",
+              "host": ["{{base_url}}"], "path": ["api", "solicitudes"],
+              "query": [{ "key": "empleado", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "POST - Crear solicitud",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idEmpleado\": 1,\n  \"tipoSolicitud\": \"Permiso\",\n  \"descripcion\": \"Solicito permiso por cita médica\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/solicitudes", "host": ["{{base_url}}"], "path": ["api", "solicitudes"] }
+          }
+        },
+        {
+          "name": "PUT - Actualizar estado de solicitud",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idSolicitud\": 1,\n  \"idEstado\": 2\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/solicitudes", "host": ["{{base_url}}"], "path": ["api", "solicitudes"] }
+          }
+        },
+        {
+          "name": "DELETE - Eliminar solicitud",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/solicitudes?id=99",
+              "host": ["{{base_url}}"], "path": ["api", "solicitudes"],
+              "query": [{ "key": "id", "value": "99" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Certificados",
+      "item": [
+        {
+          "name": "GET - Historial de certificados por empleado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/certificados?idEmpleado=1",
+              "host": ["{{base_url}}"], "path": ["api", "certificados"],
+              "query": [{ "key": "idEmpleado", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "GET - Listar todos los certificados (admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/certificados", "host": ["{{base_url}}"], "path": ["api", "certificados"] }
+          }
+        },
+        {
+          "name": "POST - Generar certificado (PDF)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"tipoCarta\": \"todos\",\n  \"canal\": \"pdf\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/certificados", "host": ["{{base_url}}"], "path": ["api", "certificados"] }
+          }
+        },
+        {
+          "name": "POST - Generar certificado (envío por correo)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": 2,\n  \"tipoCarta\": \"sin_basico\",\n  \"canal\": \"correo\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/certificados", "host": ["{{base_url}}"], "path": ["api", "certificados"] }
+          }
+        }
+      ]
+    }
+  ]
+}
