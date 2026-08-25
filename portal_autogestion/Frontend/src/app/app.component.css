@@ -1,0 +1,34 @@
+.encabezado {
+  height: 60px;
+  background: linear-gradient(90deg, #0F2F80, #1B4FBF);
+  color: #fff;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 24px; font-family: "DM Sans", Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(15,47,128,0.15);
+}
+.marca { color: #EF9F27; text-decoration: none; font-weight: 700; font-size: 1.05rem; }
+.marca .acento { color: #fff; }
+
+nav { display: flex; align-items: center; gap: 4px; }
+.enlace-nav {
+  display: flex; align-items: center; gap: 6px;
+  color: rgba(255,255,255,0.9); text-decoration: none; cursor: pointer;
+  font-size: 0.87rem; padding: 8px 12px; border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.enlace-nav:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.enlace-nav svg { flex-shrink: 0; opacity: 0.9; }
+.enlace-nav.salir { color: #ffcccc; margin-left: 6px; }
+.enlace-nav.salir:hover { background: rgba(255,80,80,0.18); color: #fff; }
+
+.pie {
+  background: linear-gradient(90deg, #0F2F80, #1B4FBF);
+  color: rgba(255,255,255,0.85);
+  padding: 14px 24px; font-size: 0.8rem;
+}
+.contacto { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+
+@media (max-width: 900px) {
+  .enlace-nav span { display: none; }
+  .enlace-nav { padding: 8px; }
+}
