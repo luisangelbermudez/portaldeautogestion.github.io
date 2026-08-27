@@ -1,0 +1,18 @@
+<div class="contenedor">
+  <h2>Generación de Certificados Laborales</h2>
+  <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
+
+  <form (ngSubmit)="generar()" class="formulario">
+    <input type="number" [(ngModel)]="solicitud.idUsuario" name="idUsuario" placeholder="ID Usuario" required />
+    <select [(ngModel)]="solicitud.tipoCarta" name="tipoCarta">
+      <option value="todos">Certificación completa (con salario)</option>
+      <option value="sin_basico">Certificación sin salario básico</option>
+      <option value="con_extras">Certificación con horas extras</option>
+    </select>
+    <select [(ngModel)]="solicitud.canal" name="canal">
+      <option value="pdf">Descargar PDF</option>
+      <option value="correo">Enviar por correo</option>
+    </select>
+    <button type="submit" [disabled]="generando">{{ generando ? "Generando..." : "Generar certificado" }}</button>
+  </form>
+</div>

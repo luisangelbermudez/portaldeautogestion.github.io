@@ -1,0 +1,4 @@
+.encabezado { background: #0f3460; color: #f1c40f; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; font-family: Arial, sans-serif; }
+.marca { color: #f1c40f; text-decoration: none; font-weight: bold; font-size: 1.1em; }
+nav a { color: white; text-decoration: none; margin-left: 20px; }
+nav a:hover { color: #f1c40f; }

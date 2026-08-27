@@ -1,0 +1,35 @@
+<div class="contenedor">
+  <h2>Gestión de Solicitudes</h2>
+  <div *ngIf="mensaje" class="mensaje">{{ mensaje }}</div>
+
+  <form (ngSubmit)="crear()" class="formulario">
+    <h3>Nueva solicitud</h3>
+    <input type="number" [(ngModel)]="nuevaSolicitud.idEmpleado" name="idEmpleado" placeholder="ID Empleado" required />
+    <input type="text" [(ngModel)]="nuevaSolicitud.tipoSolicitud" name="tipoSolicitud" placeholder="Tipo (Permiso, Vacaciones...)" required />
+    <input type="text" [(ngModel)]="nuevaSolicitud.descripcion" name="descripcion" placeholder="Descripción" />
+    <button type="submit">Enviar solicitud</button>
+  </form>
+
+  <p *ngIf="cargando">Cargando solicitudes...</p>
+
+  <table class="tabla" *ngIf="!cargando">
+    <thead>
+      <tr><th>ID</th><th>Empleado</th><th>Tipo</th><th>Descripción</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of solicitudes">
+        <td>{{ s.id_solicitud }}</td>
+        <td>{{ s.id_empleado }}</td>
+        <td>{{ s.tipo_solicitud }}</td>
+        <td>{{ s.descripcion }}</td>
+        <td>{{ ESTADOS[s.id_estado || 3] }}</td>
+        <td>{{ s.fecha_creacion | date:"short" }}</td>
+        <td>
+          <button (click)="cambiarEstado(s, 5)">Aprobar</button>
+          <button (click)="cambiarEstado(s, 6)">Rechazar</button>
+          <button (click)="eliminar(s.id_solicitud)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

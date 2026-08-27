@@ -1,0 +1,5 @@
+.contenedor { padding: 24px; font-family: Arial, sans-serif; text-align: center; }
+h2 { color: #0f3460; }
+.tarjetas { display: flex; gap: 16px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+.tarjeta { background: #0f3460; color: #f1c40f; padding: 24px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+.tarjeta:hover { background: #16497e; }
