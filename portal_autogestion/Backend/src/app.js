@@ -4,11 +4,11 @@ require("dotenv").config();
 
 const { verificarConexion } = require("./config/db");
 
+const authRoutes = require("./routes/authRoutes");
 const usuariosRoutes = require("./routes/usuariosRoutes");
 const empleadosRoutes = require("./routes/empleadosRoutes");
 const solicitudesRoutes = require("./routes/solicitudesRoutes");
 const certificadosRoutes = require("./routes/certificadosRoutes");
-const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -37,7 +37,8 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`Servidor Express corriendo en http://localhost:${PORT}`);
+  verificarConexion();
 });
 
 module.exports = app;
