@@ -5,14 +5,14 @@ async function listarOConsultar(req, res) {
     const { id } = req.query;
     if (id) {
       const [rows] = await pool.query(
-        "SELECT id_usuario, nombre, correo, id_rol, id_estado FROM usuarios WHERE id_usuario = ?",
+        "SELECT id_usuario AS idUsuario, nombre, correo, id_rol AS idRol, id_estado AS idEstado FROM usuarios WHERE id_usuario = ?",
         [id]
       );
       if (rows.length === 0) return res.status(404).json({ mensaje: "Usuario no encontrado" });
       return res.status(200).json(rows[0]);
     }
     const [rows] = await pool.query(
-      "SELECT id_usuario, nombre, correo, id_rol, id_estado FROM usuarios ORDER BY id_usuario"
+      "SELECT id_usuario AS idUsuario, nombre, correo, id_rol AS idRol, id_estado AS idEstado FROM usuarios ORDER BY id_usuario"
     );
     return res.status(200).json(rows);
   } catch (error) {
